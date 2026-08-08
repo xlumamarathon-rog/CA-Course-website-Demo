@@ -218,6 +218,45 @@ broken image links is worse than no images. Swap for `next/image` when real artw
 
 ---
 
+---
+
+## Three deployable builds
+
+The repository holds the same product three ways. Pick per audience.
+
+| Folder | Build | Deploy when |
+|---|---|---|
+| **`/`** (root) | Both directions, with a live A/B toggle bar | Presenting to the client so they can compare and choose |
+| **`/amber`** | Locked to Direction A — Amber `#F0A81C` | The chosen direction is amber; a clean client-facing URL |
+| **`/navy`** | Locked to Direction B — Navy `#103A66` | The chosen direction is navy; a clean client-facing URL |
+
+The two locked folders drop the demo bar entirely, hard-set `data-theme` on `<html>`, and set
+`--demo-h: 0px` so the nav sits at the top. Everything else — pages, admin backend, player,
+device storage — is identical.
+
+### Hosting both on Vercel
+
+Two projects from one repository, distinguished only by **Root Directory**:
+
+| | Project 1 | Project 2 |
+|---|---|---|
+| Repository | `CA-Course-website-Demo` | `CA-Course-website-Demo` |
+| **Root Directory** | `amber` | `navy` |
+| Suggested name | `ca-course-amber` | `ca-course-navy` |
+| Result | `ca-course-amber.vercel.app` | `ca-course-navy.vercel.app` |
+
+Steps for each: [vercel.com/new](https://vercel.com/new) → import the repo → expand
+**Root Directory** → choose the folder → Deploy. Framework auto-detects as Next.js and there are
+no environment variables. About 90 seconds per project.
+
+To also host the switchable build, add a third project and leave Root Directory at the repo root.
+
+### A note on the duplication
+
+`amber/` and `navy/` are full copies, so a change to a shared component has to be applied in both
+(plus the root). That is the tradeoff for two independent URLs with no toggle bar in front of the
+client. Once a direction is chosen, delete the other two and promote the winner to the root.
+
 ## Demo stubs — not production
 
 1. **Payment** — `Checkout` records the purchase locally. Wire Razorpay/Stripe in `pay()`.
