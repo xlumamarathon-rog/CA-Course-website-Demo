@@ -644,3 +644,9 @@ html,body{max-width:100%;overflow-x:hidden}
       <section class="sec band"><div class="wrap"> land on the same left
       edge. Previously the padding shorthand on .sec wiped .wrap's 40px,
       so every dark band sat 40px right of the white sections. */
+
+/* 9. The saving chip wrapped to two lines on any card whose action button
+      was wider ("Continue" vs "Enrol"), making that card's footer taller
+      than its neighbours in the same row. */
+.save{white-space:nowrap}
+.cc .foot>div{min-width:0}
