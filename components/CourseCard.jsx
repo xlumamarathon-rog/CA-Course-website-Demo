@@ -20,8 +20,12 @@ export default function CourseCard({ course: c }) {
         <div className="facts">
           <span>{c.hours}+ hrs</span>
           <span>{c.templates} templates</span>
-          <span className="st"><Stars rating={c.rating} /> {c.rating}</span>
-          <span>({Number(c.reviews || 0).toLocaleString('en-IN')})</span>
+          <span className="st">
+            <Stars rating={c.rating} /> {c.rating}
+            <span style={{ color: 'var(--muted)', fontWeight: 400 }}>
+              {' '}({Number(c.reviews || 0).toLocaleString('en-IN')})
+            </span>
+          </span>
         </div>
         <div className="foot">
           <div>

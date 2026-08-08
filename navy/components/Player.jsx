@@ -224,7 +224,14 @@ export default function Player({ course }) {
             </span>
             <span className="st">{lesson ? lesson.title : ''}</span>
             {isVideo ? (
-              <span className="eq"><i /><i /><i /><i /><i /></span>
+              playing ? (
+                <span className="eq"><i /><i /><i /><i /><i /></span>
+              ) : (
+                <button className="simplay" onClick={play}>
+                  <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+                  {time > 0 ? 'Resume' : 'Play lesson'}
+                </button>
+              )
             ) : (
               <button className="btn btn-d" onClick={finishLesson} style={{ marginTop: 8 }}>
                 {lesson && lesson.type === 'file' ? 'Download and continue' : 'Complete and continue'}

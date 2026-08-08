@@ -597,3 +597,43 @@ footer.ft a:hover{color:#fff}
 .acct-menu a,.acct-menu button{display:block;width:100%;text-align:left;padding:10px 12px;border-radius:7px;
   font-size:14px;color:var(--secondary);background:none;border:none;cursor:pointer}
 .acct-menu a:hover,.acct-menu button:hover{background:var(--surface);color:var(--ink)}
+
+/* =========================================================
+   BROWSER-TEST FIXES (live QA on the Vercel deployment)
+   ========================================================= */
+
+/* 1. Alumni card: name and employer ran together on one line, and the
+      nowrap text forced the 4-column grid wider than the viewport,
+      which produced a horizontal scrollbar sitewide and knocked every
+      full-bleed band out of alignment with the contained sections. */
+.alum .tx{min-width:0;display:flex;flex-direction:column;gap:2px}
+.alum .nm,.alum .rl{display:block}
+
+/* 2. Grid and flex children must be allowed to shrink below their
+      content width, or any nowrap text blows the track out. */
+.g2>*,.g3>*,.g4>*{min-width:0}
+.facts>*{white-space:nowrap}
+
+/* 3. Belt and braces: nothing may scroll the page sideways. */
+html,body{max-width:100%;overflow-x:hidden}
+
+
+/* 5. Thumbnail: the badge sits top-left, so anchor the title to the
+      bottom of the tile. Centred titles collided with the badge
+      whenever the title was short enough to ride high. */
+.thumb{align-items:flex-end}
+.thumb .tt{padding-top:34px}
+
+/* 6. Player tabs: overflow-x:auto was painting a scrollbar even when
+      the tabs fit. Keep the scrollability, hide the track. */
+.tabs{scrollbar-width:none;-ms-overflow-style:none}
+.tabs::-webkit-scrollbar{display:none}
+
+/* 7. In simulated playback the centred overlay play button landed on
+      top of the lesson title. Hide it and give the sim screen its own. */
+.stage.sim .bigplay{display:none}
+.simscreen .simplay{margin-top:4px;display:inline-flex;align-items:center;gap:9px;
+  background:#fff;color:#111;border:none;border-radius:999px;padding:11px 22px;
+  font-size:15px;font-weight:600;cursor:pointer;transition:transform .15s var(--ease)}
+.simscreen .simplay:hover{transform:scale(1.04)}
+.simscreen .simplay svg{width:14px;height:14px;fill:#111}
