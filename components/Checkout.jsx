@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Thumb from './Thumb';
 import Footer from './Footer';
@@ -29,6 +29,16 @@ export default function Checkout({ course: c }) {
     cvv: '123'
   });
   const [method, setMethod] = useState('card');
+
+  /* The signed-in account resolves from device storage a tick after mount,
+     so back-fill the form once it arrives (useState only runs its initialiser once). */
+  const prefilled = useRef(false);
+  useEffect(() => {
+    if (!user || prefilled.current) return;
+    prefilled.current = true;
+    setForm(f => ({ ...f, name: f.name || user.name, email: f.email || user.email }));
+    setCard(c => ({ ...c, name: (user.name || '').toUpperCase() }));
+  }, [user]);
 
   const list = c.mrp || c.price;
   const discount = applied ? list - c.price : 0;

@@ -1,20 +1,8 @@
-'use client';
-import { useParams } from 'next/navigation';
-import Checkout from '@/components/Checkout';
-import Gate from '@/components/Gate';
-import { useCourses, useAuth } from '@/lib/store';
+import CheckoutView from '@/components/CheckoutView';
 
-export default function CheckoutPage() {
-  const { id } = useParams();
-  const courses = useCourses();
-  const { isAuthed, ready } = useAuth();
-  const course = courses.get(id);
+export const metadata = { title: 'Checkout — Thinking Bridge' };
 
-  if (!courses.ready || !ready) {
-    return <div className="wrap" style={{ padding: '96px 40px', color: 'var(--muted)' }}>Loading…</div>;
-  }
-  if (!course) return <div className="wrap err"><div className="code">404</div><h1>Course not found</h1></div>;
-  if (!isAuthed) return <Gate mode="auth" course={course} next={'/checkout/' + id} />;
-
-  return <Checkout course={course} />;
+export default async function CheckoutPage({ params }) {
+  const { id } = await params;
+  return <CheckoutView id={id} />;
 }
