@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Footer from '@/components/Footer';
 import { useAuth } from '@/lib/store';
-import { DEMO_ACCOUNTS } from '@/lib/accounts';
+import { PUBLIC_ACCOUNTS } from '@/lib/accounts';
 
 function LoginInner() {
   const router = useRouter();
@@ -108,7 +108,7 @@ function LoginInner() {
           <span>Demo credentials</span>
           <span className="creds-hint">Click an account to fill the form</span>
         </div>
-        {DEMO_ACCOUNTS.map(a => (
+        {PUBLIC_ACCOUNTS.map(a => (
           <button type="button" key={a.email} className={'cred' + (filled === a.email ? ' on' : '')} onClick={() => fill(a)}>
             <span className={'av' + (a.role === 'admin' ? ' ac' : '')}>
               {a.name.split(' ').map(x => x[0]).join('').slice(0, 2)}
@@ -125,7 +125,8 @@ function LoginInner() {
           </button>
         ))}
         <p className="creds-foot">
-          Nothing is checked against a server — these accounts exist only in this browser.
+          Learner accounts only. Nothing is checked against a server — these exist just in this browser.
+          Staff sign in at <Link href="/admin/login" style={{ textDecoration: 'underline' }}>/admin/login</Link>.
         </p>
       </div>
 
