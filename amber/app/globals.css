@@ -903,3 +903,13 @@ main{padding-top:calc(var(--demo-h) + var(--ann-h) + var(--nav-h))}
 .locked-row .mt{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
 .locked-cta{padding:var(--s6);text-align:center;background:#fff}
 .locked-cta p{color:var(--secondary);font-size:15px;max-width:52ch;margin:0 auto var(--s5)}
+
+/* ---------- locked lessons + inline purchase band ---------- */
+.lec.is-locked .tl{color:var(--muted)}
+.lec.is-locked{background:repeating-linear-gradient(135deg,transparent,transparent 10px,rgba(0,0,0,.012) 10px,rgba(0,0,0,.012) 20px)}
+.buyband{display:flex;align-items:center;justify-content:space-between;gap:var(--s5);flex-wrap:wrap;
+  margin-top:var(--s5);padding:var(--s5) var(--s6);border:1px solid var(--ac-bd);border-radius:var(--r-lg);
+  background:var(--ac-tint)}
+.buyband-tx b{display:block;font-size:17px;font-weight:600;letter-spacing:-.01em}
+.buyband-tx i{display:block;font-style:normal;font-size:14px;color:var(--secondary);margin-top:5px;max-width:56ch}
+.buyband-buy{display:flex;align-items:center;gap:var(--s4);flex-wrap:wrap}

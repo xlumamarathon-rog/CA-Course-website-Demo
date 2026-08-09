@@ -6,8 +6,8 @@ import Faq from '@/components/Faq';
 import BuyCard from '@/components/BuyCard';
 import MobileBuyBar from '@/components/MobileBuyBar';
 import Stars from '@/components/Stars';
-import { FAQS, TESTIMONIALS, totalLessons, parseDur, fmtLong } from '@/lib/data';
-import { useCourses, useAuth } from '@/lib/store';
+import { FAQS, TESTIMONIALS, totalLessons, parseDur, fmtLong, fmt } from '@/lib/data';
+import { useCourses, useAuth, usePurchases } from '@/lib/store';
 import { useSite } from '@/lib/site';
 import IntroVideo from '@/components/IntroVideo';
 
@@ -16,7 +16,11 @@ export default function CourseDetail({ id }) {
   const { isAuthed, ready: authReady } = useAuth();
   const { site } = useSite();
   const c = courses.get(id);
+  const { has, ready: pReady } = usePurchases();
   const gateCurriculum = site.access.requireLoginForCurriculum && authReady && !isAuthed;
+  const owned = c ? has(c) : false;
+  /* signed in, but this course is not theirs yet */
+  const needsPurchase = authReady && pReady && isAuthed && !owned;
 
   /* The catalogue falls back to the seed courses, so a known course renders
      immediately (server-side too). Only wait when it genuinely isn't resolved. */
@@ -86,12 +90,14 @@ export default function CourseDetail({ id }) {
             </div>
 
             {/* introduction video — the one thing a signed-out visitor may watch */}
-            {gateCurriculum && (
+            {(gateCurriculum || needsPurchase) && (
               <div style={{ marginTop: 40 }}>
                 <p className="eyebrow">Course introduction</p>
                 <IntroVideo src={c.intro} title={c.title} />
                 <p style={{ fontSize: 14, color: 'var(--muted)', marginTop: 12 }}>
-                  A short preview. The full course opens once you sign in and enrol.
+                  {gateCurriculum
+                    ? 'A short preview. The full course opens once you sign in and enrol.'
+                    : 'A short preview. Buy the course to unlock all ' + total + ' lessons.'}
                 </p>
               </div>
             )}
@@ -144,7 +150,34 @@ export default function CourseDetail({ id }) {
                   </div>
                 </div>
               ) : (
-                <Accordion sections={c.sections} />
+                <>
+                  <Accordion sections={c.sections} locked={needsPurchase} />
+
+                  {needsPurchase && (
+                    <div className="buyband">
+                      <div className="buyband-tx">
+                        <b>You do not own this course yet</b>
+                        <i>
+                          The first lesson is a free preview. Buying unlocks the remaining{' '}
+                          {total - 1} lessons, {c.templates} templates and the certificate.
+                        </i>
+                      </div>
+                      <div className="buyband-buy">
+                        {c.price === 0 ? (
+                          <span className="free" style={{ fontSize: 21, fontWeight: 600, color: 'var(--success-deep)' }}>Free</span>
+                        ) : (
+                          <div className="price">
+                            <span className="now">{fmt(c.price)}</span>
+                            {c.mrp > c.price && <span className="was">{fmt(c.mrp)}</span>}
+                          </div>
+                        )}
+                        <Link href={c.price === 0 ? '/learn/' + c.id : '/checkout/' + c.id} className="btn btn-p">
+                          {c.price === 0 ? 'Start free' : 'Buy this course'}
+                        </Link>
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
             </div>
 
