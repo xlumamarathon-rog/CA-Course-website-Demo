@@ -16,6 +16,20 @@ vi.mock('next/link', () => ({
   default: ({ href, children, ...rest }) => React.createElement('a', { href, ...rest }, children)
 }));
 
+/* jsdom implements neither of these */
+if (!globalThis.IntersectionObserver) {
+  globalThis.IntersectionObserver = class {
+    constructor(cb) { this.cb = cb; }
+    observe(el) { this.cb([{ isIntersecting: true, target: el }], this); }
+    unobserve() {}
+    disconnect() {}
+  };
+}
+if (!window.matchMedia) {
+  window.matchMedia = () => ({ matches: false, addListener() {}, removeListener() {},
+    addEventListener() {}, removeEventListener() {} });
+}
+
 beforeEach(() => {
   cleanup();
   window.localStorage.clear();

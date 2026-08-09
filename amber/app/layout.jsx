@@ -1,5 +1,6 @@
 import './globals.css';
 import Nav from '@/components/Nav';
+import AnnouncementBar from '@/components/AnnouncementBar';
 
 export const metadata = {
   title: 'Thinking Bridge — Practical finance training & placements',
@@ -18,6 +19,7 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body>
+        <AnnouncementBar />
         <Nav />
         <main>{children}</main>
       </body>

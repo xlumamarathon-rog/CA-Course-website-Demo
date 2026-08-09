@@ -4,6 +4,8 @@ import CourseCard from '@/components/CourseCard';
 import Footer from '@/components/Footer';
 import { CATEGORIES } from '@/lib/data';
 import { useCourses } from '@/lib/store';
+import { SkeletonGrid } from '@/components/Skeleton';
+import Reveal from '@/components/Reveal';
 
 const SORTS = [
   { id: 'popular', label: 'Most popular' },
@@ -73,8 +75,14 @@ export default function CoursesPage() {
         <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 24 }}>
           Showing {list.length} of {CATALOGUE.length} courses
         </p>
-        {list.length ? (
-          <div className="g3">{list.map(c => <CourseCard key={c.id} course={c} />)}</div>
+        {!courses.ready ? (
+          <SkeletonGrid count={6} className="g3" />
+        ) : list.length ? (
+          <div className="g3">
+            {list.map((c, i) => (
+              <Reveal key={c.id} delay={Math.min(i, 5) * 60}><CourseCard course={c} /></Reveal>
+            ))}
+          </div>
         ) : (
           <div className="emptyst">
             <h3 style={{ fontSize: 21, marginBottom: 12 }}>Nothing matches “{q}”</h3>

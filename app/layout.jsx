@@ -1,6 +1,7 @@
 import './globals.css';
 import { ThemeProvider, themeBootScript } from '@/lib/theme';
 import DemoBar from '@/components/DemoBar';
+import AnnouncementBar from '@/components/AnnouncementBar';
 import Nav from '@/components/Nav';
 
 export const metadata = {
@@ -23,6 +24,7 @@ export default function RootLayout({ children }) {
       <body>
         <ThemeProvider>
           <DemoBar />
+          <AnnouncementBar />
           <Nav />
           <main>{children}</main>
         </ThemeProvider>
