@@ -27,8 +27,8 @@ export default function Nav() {
       <nav className="nav">
         <div className="nav-in">
           <Link href="/" className="logo">
-            <span className="mark">TB</span>
-            <span>THINKING BRIDGE</span>
+            <span className="mark">LL</span>
+            <span>LEDGERLINE</span>
           </Link>
 
           <ul className="nav-links">
