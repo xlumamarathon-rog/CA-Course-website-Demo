@@ -25,7 +25,7 @@ function LoginInner() {
   };
 
   const submit = (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     setErr('');
     try {
       if (mode === 'signup') {
@@ -97,7 +97,7 @@ function LoginInner() {
 
         {err && <p style={{ color: 'var(--danger)', fontSize: 14, marginTop: -8, marginBottom: 20 }}>{err}</p>}
 
-        <button className="btn btn-p btn-lg btn-full" type="submit">
+        <button className="btn btn-p btn-lg btn-full" type="submit" onClick={submit}>
           {mode === 'signin' ? 'Sign in' : 'Create account and continue'}
         </button>
       </form>
