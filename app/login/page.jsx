@@ -16,6 +16,7 @@ function LoginInner() {
   const [f, setF] = useState({ name: '', email: '', password: '' });
   const [err, setErr] = useState('');
   const [filled, setFilled] = useState(null);
+  const [busy, setBusy] = useState(false);
 
   const fill = (acc) => {
     setMode('signin');
@@ -24,21 +25,35 @@ function LoginInner() {
     setFilled(acc.email);
   };
 
+  /* Navigate with the router, but fall back to a hard navigation if the
+     client-side push has not moved us shortly after. Losing a sign-in to a
+     silent no-op is far worse than an extra page load. */
+  const go = (to) => {
+    try { router.push(to); } catch (e) { /* fall through */ }
+    setTimeout(() => {
+      if (typeof window !== 'undefined' && window.location.pathname === '/login') {
+        window.location.assign(to);
+      }
+    }, 400);
+  };
+
   const submit = (e) => {
     if (e && e.preventDefault) e.preventDefault();
     setErr('');
+    setBusy(true);
     try {
       if (mode === 'signup') {
+        if (!f.email.trim()) { setErr('Enter an email address.'); setBusy(false); return; }
         signup({ name: f.name, email: f.email });
-        router.push(next);
+        go(next);
         return;
       }
       const res = login(f.email, f.password);
-      if (res.error) { setErr(res.error); return; }
-      router.push(res.user.role === 'admin' && next === '/dashboard' ? '/admin' : next);
+      if (res.error) { setErr(res.error); setBusy(false); return; }
+      go(res.user.role === 'admin' && next === '/dashboard' ? '/admin' : next);
     } catch (ex) {
-      // surface it rather than dying silently in the handler
       setErr('Sign-in failed: ' + (ex && ex.message ? ex.message : String(ex)));
+      setBusy(false);
     }
   };
 
@@ -97,8 +112,8 @@ function LoginInner() {
 
         {err && <p style={{ color: 'var(--danger)', fontSize: 14, marginTop: -8, marginBottom: 20 }}>{err}</p>}
 
-        <button className="btn btn-p btn-lg btn-full" type="submit" onClick={submit}>
-          {mode === 'signin' ? 'Sign in' : 'Create account and continue'}
+        <button className="btn btn-p btn-lg btn-full" type="submit" onClick={submit} disabled={busy}>
+          {busy ? 'Signing you in…' : (mode === 'signin' ? 'Sign in' : 'Create account and continue')}
         </button>
       </form>
 

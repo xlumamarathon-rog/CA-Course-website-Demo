@@ -15,6 +15,7 @@ export default function AdminLoginPage() {
   const [f, setF] = useState({ email: '', password: '' });
   const [err, setErr] = useState('');
   const [filled, setFilled] = useState(null);
+  const [busy, setBusy] = useState(false);
 
   const fill = (acc) => {
     setF({ email: acc.email, password: acc.password });
@@ -32,9 +33,16 @@ export default function AdminLoginPage() {
         setErr('That is a learner account. Staff credentials are required here.');
         return;
       }
-      router.push('/admin');
+      setBusy(true);
+      try { router.push('/admin'); } catch (e2) {}
+      setTimeout(() => {
+        if (typeof window !== 'undefined' && window.location.pathname.startsWith('/admin/login')) {
+          window.location.assign('/admin');
+        }
+      }, 400);
     } catch (ex) {
       setErr('Sign-in failed: ' + (ex && ex.message ? ex.message : String(ex)));
+      setBusy(false);
     }
   };
 
@@ -76,8 +84,8 @@ export default function AdminLoginPage() {
 
           {err && <p style={{ color: 'var(--danger)', fontSize: 14, marginTop: -8, marginBottom: 20 }}>{err}</p>}
 
-          <button className="btn btn-p btn-lg btn-full" type="submit" onClick={submit}>
-            Sign in to the admin panel
+          <button className="btn btn-p btn-lg btn-full" type="submit" onClick={submit} disabled={busy}>
+            {busy ? 'Signing you in…' : 'Sign in to the admin panel'}
           </button>
         </form>
 

@@ -196,7 +196,6 @@ main{padding-top:calc(var(--demo-h) + var(--nav-h))}
 .lec .ic{flex:none;width:16px;color:var(--muted);font-size:12px}
 .lec .tl{flex:1}
 .lec .dur{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
-.lec .prev{font-size:12px;font-weight:600;color:var(--ac-text)}
 
 /* sticky buy card */
 .buy-wrap{position:relative}

@@ -19,14 +19,11 @@ export default function Accordion({ sections, openFirst = true, locked = false }
             </button>
             <div className="acc-b">
               {s.lectures.map((l, j) => (
-                <div className={'lec' + (locked && !(i === 0 && j === 0) ? ' is-locked' : '')} key={j}>
+                <div className={'lec' + (locked ? ' is-locked' : '')} key={j}>
                   <span className="ic">
-                    {locked && !(i === 0 && j === 0)
-                      ? '🔒'
-                      : l.type === 'file' ? '⤓' : l.type === 'quiz' ? '✎' : '▶'}
+                    {locked ? '🔒' : l.type === 'file' ? '⤓' : l.type === 'quiz' ? '✎' : '▶'}
                   </span>
                   <span className="tl">{l.title}</span>
-                  {i === 0 && j === 0 && <span className="prev">Free preview</span>}
                   <span className="dur">{l.dur}</span>
                 </div>
               ))}

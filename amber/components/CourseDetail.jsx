@@ -158,8 +158,8 @@ export default function CourseDetail({ id }) {
                       <div className="buyband-tx">
                         <b>You do not own this course yet</b>
                         <i>
-                          The first lesson is a free preview. Buying unlocks the remaining{' '}
-                          {total - 1} lessons, {c.templates} templates and the certificate.
+                          Watch the introduction above to judge the teaching. Buying unlocks all{' '}
+                          {total} lessons, {c.templates} templates and the certificate.
                         </i>
                       </div>
                       <div className="buyband-buy">
