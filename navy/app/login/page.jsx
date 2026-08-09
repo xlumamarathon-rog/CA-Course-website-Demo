@@ -77,7 +77,7 @@ function LoginInner() {
   }
 
   return (
-    <section className="wrap auth-wrap" style={{ paddingTop: 56, paddingBottom: 96, maxWidth: 560 }}>
+    <section className="wrap auth-wrap" style={{ paddingTop: 56, paddingBottom: 96 }}>
       <div className="auth-head">
       <p className="eyebrow">{mode === 'signin' ? 'Sign in' : 'Create account'}</p>
       <h1 style={{ fontSize: 34, letterSpacing: '-.02em', marginBottom: 12 }}>

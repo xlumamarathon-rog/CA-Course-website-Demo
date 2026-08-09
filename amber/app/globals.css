@@ -978,6 +978,7 @@ main{padding-top:calc(var(--demo-h) + var(--ann-h) + var(--nav-h))}
 
 /* 8. Auth pages were a 520px column adrift in a 1680px viewport. Two columns
       on desktop: the form beside the credentials panel. */
+.auth-wrap{max-width:560px}
 .auth-head{max-width:60ch}
 .auth-grid{display:grid;grid-template-columns:1fr;gap:var(--s7);margin-top:var(--s6)}
 @media(min-width:1000px){
@@ -1024,7 +1025,17 @@ main{padding-top:calc(var(--demo-h) + var(--ann-h) + var(--nav-h))}
 .sc-chip i{display:block;font-style:normal;font-size:12px;color:var(--muted);margin-top:2px}
 /* Sit the chips on the card's corners, over chrome and whitespace — the first
    placement had them covering the lesson kicker and a curriculum row. */
-.sc-chip-a{left:-30px;top:-20px}
-.sc-chip-b{right:-26px;bottom:-22px}
+.sc-chip-a{left:-38px;top:-30px}
+.sc-chip-b{right:-32px;bottom:-34px}
 @media(max-width:1200px){.sc-chip{display:none}}
 @media(max-width:1000px){.showcase{display:none}}
+
+/* the credential rows must not collapse into one-word-per-line when the
+   panel sits in a column rather than full width */
+.creds .cred{gap:12px}
+.creds .cred-tx{min-width:0}
+.creds .cred-mail{word-break:break-all}
+@media(min-width:1000px){
+  .auth-grid .creds .cred{padding:14px 16px}
+  .auth-grid .creds .cred-blurb{display:none}
+}

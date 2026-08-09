@@ -48,7 +48,7 @@ export default function AdminLoginPage() {
 
   return (
     <>
-      <section className="wrap auth-wrap" style={{ paddingTop: 56, paddingBottom: 96, maxWidth: 520 }}>
+      <section className="wrap auth-wrap" style={{ paddingTop: 56, paddingBottom: 96 }}>
         <div className="auth-head">
         <p className="eyebrow">Staff access</p>
         <h1 style={{ fontSize: 34, letterSpacing: '-.02em', marginBottom: 12 }}>Administrator sign-in</h1>
