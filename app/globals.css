@@ -860,3 +860,16 @@ main{padding-top:calc(var(--demo-h) + var(--ann-h) + var(--nav-h))}
 
 /* ---------- admin: seed cards ---------- */
 .seedcard{display:flex;flex-direction:column}
+
+/* ---------- in-app confirmation dialog ---------- */
+.cfm-backdrop{position:fixed;inset:0;background:rgba(17,17,19,.42);backdrop-filter:blur(2px);
+  z-index:4000;display:grid;place-items:center;padding:24px;animation:cfmIn .16s var(--ease)}
+@keyframes cfmIn{from{opacity:0}to{opacity:1}}
+.cfm{background:#fff;border-radius:var(--r-lg);box-shadow:var(--sh-lg);max-width:440px;width:100%;
+  padding:28px;animation:cfmPop .2s var(--ease)}
+@keyframes cfmPop{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+.cfm h3{font-size:21px;letter-spacing:-.015em;margin-bottom:10px}
+.cfm p{font-size:15px;color:var(--secondary);margin:0}
+.cfm-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:26px}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-danger:hover{background:#8F1C13}

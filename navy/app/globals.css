@@ -12,7 +12,7 @@
   --r-sm:6px;--r-md:10px;--r-lg:14px;--r-xl:20px;
   --sh-sm:0 1px 2px rgba(0,0,0,.04);--sh-md:0 4px 16px rgba(0,0,0,.06);--sh-lg:0 12px 40px rgba(0,0,0,.10);
   --ease:cubic-bezier(.2,0,0,1);
-  --nav-h:60px;--demo-h:0px; /* no demo bar in this build */
+  --nav-h:60px;--demo-h:44px;
 }
 [data-theme="amber"]{--ac:#F0A81C;--ac-h:#D9940F;--on-ac:#1D1D1F;--ac-text:#8A5D00;--ac-tint:#FFF8E9;--ac-bd:#F2D9A0;--ac-dark:#F0A81C}
 [data-theme="navy"]{--ac:#103A66;--ac-h:#0B2A4D;--on-ac:#FFFFFF;--ac-text:#103A66;--ac-tint:#EFF4FA;--ac-bd:#C9DAEF;--ac-dark:#4A82C4}
@@ -41,6 +41,19 @@ img{max-width:100%;display:block}
 .band .eyebrow{color:#A1A1A6}
 .tint{background:var(--surface)}
 .hr{border:none;border-top:1px solid var(--border);margin:var(--s7) 0}
+
+/* ---------- demo control bar ---------- */
+.demobar{position:fixed;top:0;left:0;right:0;height:var(--demo-h);background:#0A0A0C;color:#fff;z-index:2000;
+  display:flex;align-items:center;gap:var(--s5);padding:0 20px;font-size:13px;border-bottom:1px solid #2C2C30}
+.demobar .lbl{font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:11px;color:#A1A1A6;flex:none}
+.seg{display:flex;background:#1D1D20;border-radius:8px;padding:3px;gap:3px;flex:none}
+.seg button{background:transparent;border:none;color:#A1A1A6;font-size:12px;font-weight:600;padding:6px 14px;
+  border-radius:6px;cursor:pointer;transition:all .15s var(--ease);white-space:nowrap}
+.seg button.on{background:#fff;color:#111}
+.seg button:not(.on):hover{color:#fff}
+.demobar .spacer{flex:1}
+.demobar .hint{color:#6E6E73;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.demobar .dirname{color:#fff;font-weight:600}
 
 /* ---------- nav ---------- */
 .nav{position:fixed;top:var(--demo-h);left:0;right:0;height:var(--nav-h);background:rgba(255,255,255,.86);
@@ -249,6 +262,8 @@ footer.ft a:hover{color:#fff}
     background:#fff;z-index:1400;padding:var(--s5) 24px;overflow:auto}
   .mobmenu a{display:block;font-size:19px;font-weight:600;padding:var(--s4) 0;border-bottom:1px solid var(--border)}
   .stats{gap:var(--s6)}
+  .demobar{gap:var(--s3);padding:0 14px}
+  .demobar .hint{display:none}
 }
 @media(max-width:640px){
   .g4{grid-template-columns:1fr}
@@ -617,6 +632,9 @@ footer.ft a:hover{color:#fff}
 /* 3. Belt and braces: nothing may scroll the page sideways. */
 html,body{max-width:100%;overflow-x:hidden}
 
+/* 4. Demo bar: the hint is a flex item with nowrap, so it needs
+      min-width:0 to be allowed to ellipsis instead of overflowing. */
+.demobar .hint{min-width:0;flex-shrink:1}
 
 /* 5. Thumbnail: the badge sits top-left, so anchor the title to the
       bottom of the tile. Centred titles collided with the badge
@@ -839,3 +857,19 @@ main{padding-top:calc(var(--demo-h) + var(--ann-h) + var(--nav-h))}
 
 /* ---------- admin: seed cards ---------- */
 .seedcard{display:flex;flex-direction:column}
+
+/* ---------- admin: seed cards ---------- */
+.seedcard{display:flex;flex-direction:column}
+
+/* ---------- in-app confirmation dialog ---------- */
+.cfm-backdrop{position:fixed;inset:0;background:rgba(17,17,19,.42);backdrop-filter:blur(2px);
+  z-index:4000;display:grid;place-items:center;padding:24px;animation:cfmIn .16s var(--ease)}
+@keyframes cfmIn{from{opacity:0}to{opacity:1}}
+.cfm{background:#fff;border-radius:var(--r-lg);box-shadow:var(--sh-lg);max-width:440px;width:100%;
+  padding:28px;animation:cfmPop .2s var(--ease)}
+@keyframes cfmPop{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+.cfm h3{font-size:21px;letter-spacing:-.015em;margin-bottom:10px}
+.cfm p{font-size:15px;color:var(--secondary);margin:0}
+.cfm-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:26px}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-danger:hover{background:#8F1C13}

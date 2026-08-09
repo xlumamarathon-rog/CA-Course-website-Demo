@@ -1,6 +1,7 @@
 import './globals.css';
 import Nav from '@/components/Nav';
 import AnnouncementBar from '@/components/AnnouncementBar';
+import { ConfirmProvider } from '@/components/Confirm';
 
 export const metadata = {
   title: 'Thinking Bridge — Practical finance training & placements',
@@ -19,9 +20,11 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body>
-        <AnnouncementBar />
-        <Nav />
-        <main>{children}</main>
+        <ConfirmProvider>
+          <AnnouncementBar />
+          <Nav />
+          <main>{children}</main>
+        </ConfirmProvider>
       </body>
     </html>
   );

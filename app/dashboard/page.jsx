@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
+import { useConfirm } from '@/components/Confirm';
 import Thumb from '@/components/Thumb';
 import { totalLessons, flatLessons } from '@/lib/data';
 import { useStored, KEYS, dumpAll, clearAll } from '@/lib/storage';
@@ -15,6 +16,7 @@ export default function Dashboard() {
   const [notes] = useStored(KEYS.notes, {});
   const [showRaw, setShowRaw] = useState(false);
   const [raw, setRaw] = useState('');
+  const confirm = useConfirm();
 
   useEffect(() => { setRaw(JSON.stringify(dumpAll(), null, 2)); }, [purchased, progress, notes, showRaw]);
 
@@ -109,7 +111,14 @@ export default function Dashboard() {
             <button className="btn btn-s btn-sm" onClick={() => setShowRaw(s => !s)}>
               {showRaw ? 'Hide stored data' : 'Show stored data'}
             </button>
-            <button className="btn btn-s btn-sm" onClick={() => { if (confirm('Erase all locally stored progress?')) clearAll(); }}>
+            <button className="btn btn-s btn-sm" onClick={async () => {
+              const ok = await confirm({
+                title: 'Reset this device?',
+                body: 'Your purchases, progress and notes on this browser are erased.',
+                confirmLabel: 'Erase', danger: true
+              });
+              if (ok) clearAll();
+            }}>
               Reset this device
             </button>
           </div>

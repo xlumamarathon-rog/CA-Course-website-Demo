@@ -1,12 +1,14 @@
 'use client';
 import Link from 'next/link';
 import AdminShell from '@/components/AdminShell';
+import { useConfirm } from '@/components/Confirm';
 import { useCourses, useAllStudents } from '@/lib/store';
 import { totalLessons, fmt, parseDur, fmtLong } from '@/lib/data';
 
 export default function AdminDashboard() {
   const courses = useCourses();
   const students = useAllStudents();
+  const confirm = useConfirm();
 
   const all = courses.all;
   const live = all.filter(c => c.published !== false);
@@ -87,9 +89,13 @@ export default function AdminDashboard() {
         </p>
         <div className="btn-row" style={{ marginTop: 20 }}>
           <Link href="/admin/courses/new" className="btn btn-p btn-sm">Create a course</Link>
-          <button className="btn btn-s btn-sm" onClick={() => {
-            if (confirm('Reset the catalogue back to the six seed courses? Your created courses will be removed.'))
-              courses.resetToSeed();
+          <button className="btn btn-s btn-sm" onClick={async () => {
+            const ok = await confirm({
+              title: 'Reset the catalogue?',
+              body: 'The six seed courses come back and anything you created here is removed.',
+              confirmLabel: 'Reset catalogue', danger: true
+            });
+            if (ok) courses.resetToSeed();
           }}>Reset catalogue</button>
         </div>
       </div>

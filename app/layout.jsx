@@ -2,6 +2,7 @@ import './globals.css';
 import { ThemeProvider, themeBootScript } from '@/lib/theme';
 import DemoBar from '@/components/DemoBar';
 import AnnouncementBar from '@/components/AnnouncementBar';
+import { ConfirmProvider } from '@/components/Confirm';
 import Nav from '@/components/Nav';
 
 export const metadata = {
@@ -23,10 +24,12 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <ThemeProvider>
+          <ConfirmProvider>
           <DemoBar />
           <AnnouncementBar />
           <Nav />
           <main>{children}</main>
+          </ConfirmProvider>
         </ThemeProvider>
       </body>
     </html>

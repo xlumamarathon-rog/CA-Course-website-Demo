@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import AdminShell from '@/components/AdminShell';
+import { useConfirm } from '@/components/Confirm';
 import { SEEDS } from '@/lib/seeds';
 import {
   getDb, dbStats, replaceDb, clearAll, exportDbFile, getEngine,
@@ -17,6 +18,7 @@ export default function AdminDatabase() {
   const [msg, setMsg] = useState(null);
   const [showRaw, setShowRaw] = useState(false);
   const fileRef = useRef(null);
+  const confirm = useConfirm();
 
   const refresh = () => {
     setStats(dbStats());
@@ -34,8 +36,13 @@ export default function AdminDatabase() {
 
   const say = (kind, text) => { setMsg({ kind, text }); setTimeout(() => setMsg(null), 3500); };
 
-  const loadSeed = (seed) => {
-    if (!confirm('Load “' + seed.name + '”? This replaces the database on this device.')) return;
+  const loadSeed = async (seed) => {
+    const ok = await confirm({
+      title: 'Load “' + seed.name + '”?',
+      body: 'This replaces the database on this device with that scenario.',
+      confirmLabel: 'Load state'
+    });
+    if (!ok) return;
     replaceDb(seed.build());
     refresh();
     say('ok', seed.name + ' loaded — every page is already showing it.');
@@ -179,7 +186,12 @@ export default function AdminDatabase() {
           <h3>media store — uploaded video</h3>
           {media.length > 0 && (
             <button className="btn btn-t" style={{ fontSize: 13, color: 'var(--danger)' }}
-              onClick={() => { if (confirm('Delete all ' + media.length + ' stored clips?')) { mediaClear().then(refresh); } }}>
+              onClick={async () => {
+                const ok = await confirm({ title: 'Delete all stored video?',
+                  body: media.length + ' clip' + (media.length === 1 ? '' : 's') + ' will be removed from IndexedDB.',
+                  confirmLabel: 'Delete all', danger: true });
+                if (ok) mediaClear().then(refresh);
+              }}>
               Delete all
             </button>
           )}
@@ -249,7 +261,12 @@ export default function AdminDatabase() {
           on this device. The catalogue falls back to the six seed courses on the next read.
         </p>
         <button className="btn btn-s btn-sm" style={{ color: 'var(--danger)', borderColor: '#E7A9A2' }}
-          onClick={() => { if (confirm('Erase the entire local database on this device?')) { clearAll(); refresh(); say('ok', 'Database wiped.'); } }}>
+          onClick={async () => {
+            const ok = await confirm({ title: 'Erase the entire database?',
+              body: 'Both stores are cleared — courses, accounts, purchases, notes, settings and uploaded video.',
+              confirmLabel: 'Erase everything', danger: true });
+            if (ok) { clearAll(); refresh(); say('ok', 'Database wiped.'); }
+          }}>
           Erase everything
         </button>
       </div>

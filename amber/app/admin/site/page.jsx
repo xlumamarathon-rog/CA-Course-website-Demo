@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import AdminShell from '@/components/AdminShell';
+import { useConfirm } from '@/components/Confirm';
 import { useSite, resolveBatchDate } from '@/lib/site';
 import { batchLabel } from '@/components/Countdown';
 
@@ -57,6 +58,7 @@ export default function AdminSitePage() {
   const { site, update, set, reset } = useSite();
   const [tab, setTab] = useState('announcement');
   const [saved, setSaved] = useState('');
+  const confirm = useConfirm();
 
   const note = (m) => { setSaved(m); setTimeout(() => setSaved(''), 2200); };
   const patch = (group, p) => { update(group, p); note('Saved — the homepage is already showing it.'); };
@@ -71,8 +73,13 @@ export default function AdminSitePage() {
       action={
         <>
           <Link href="/" className="btn btn-s btn-sm">View homepage</Link>
-          <button className="btn btn-s btn-sm" onClick={() => {
-            if (confirm('Reset every homepage setting back to the defaults?')) { reset(); note('Reset to defaults.'); }
+          <button className="btn btn-s btn-sm" onClick={async () => {
+            const ok = await confirm({
+              title: 'Reset the homepage?',
+              body: 'Every setting on this page goes back to its default.',
+              confirmLabel: 'Reset homepage', danger: true
+            });
+            if (ok) { reset(); note('Reset to defaults.'); }
           }}>Reset</button>
         </>
       }

@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import AdminShell from '@/components/AdminShell';
+import { useConfirm } from '@/components/Confirm';
 import { useCourses, useAllStudents } from '@/lib/store';
 import { totalLessons, fmt } from '@/lib/data';
 
@@ -9,6 +10,7 @@ export default function AdminCourses() {
   const courses = useCourses();
   const students = useAllStudents();
   const [q, setQ] = useState('');
+  const confirm = useConfirm();
   const [filter, setFilter] = useState('all');
 
   const soldCount = (id) => students.filter(s => s.courses.includes(id)).length;
@@ -65,7 +67,14 @@ export default function AdminCourses() {
                       <Link href={'/course/' + c.id} className="btn btn-t" style={{ fontSize: 13 }}>View</Link>
                       <Link href={'/admin/courses/' + c.id} className="btn btn-s btn-sm">Edit</Link>
                       <button className="btn btn-s btn-sm" style={{ color: 'var(--danger)' }}
-                        onClick={() => { if (confirm('Delete “' + c.title + '”? This cannot be undone.')) courses.remove(c.id); }}>
+                        onClick={async () => {
+                          const ok = await confirm({
+                            title: 'Delete this course?',
+                            body: '“' + c.title + '” will be removed from the catalogue. This cannot be undone.',
+                            confirmLabel: 'Delete course', danger: true
+                          });
+                          if (ok) courses.remove(c.id);
+                        }}>
                         Delete
                       </button>
                     </div>
