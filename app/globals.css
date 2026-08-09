@@ -873,3 +873,33 @@ main{padding-top:calc(var(--demo-h) + var(--ann-h) + var(--nav-h))}
 .cfm-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:26px}
 .btn-danger{background:var(--danger);color:#fff}
 .btn-danger:hover{background:#8F1C13}
+
+/* ---------- course introduction video (signed-out preview) ---------- */
+.intro{border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--border);background:var(--dark)}
+.intro-stage{position:relative;aspect-ratio:16/9;background:#000}
+.intro-stage video{width:100%;height:100%;object-fit:contain;display:block;background:#000}
+.intro-play{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;background:rgba(0,0,0,.42);border:none;cursor:pointer;transition:background .2s var(--ease)}
+.intro-play:hover{background:rgba(0,0,0,.32)}
+.intro-play-btn{width:68px;height:68px;border-radius:999px;background:rgba(255,255,255,.96);
+  display:grid;place-items:center;transition:transform .2s var(--ease)}
+.intro-play:hover .intro-play-btn{transform:scale(1.06)}
+.intro-play-btn svg{width:24px;height:24px;fill:#111;margin-left:4px}
+.intro-play-tx{color:#fff;font-size:15px;font-weight:600;letter-spacing:-.005em}
+.intro-fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:10px;text-align:center;padding:var(--s6);
+  background:radial-gradient(circle at 50% 40%,#1c1c22,#08080a)}
+.intro-fallback .kicker{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6E6E73}
+.intro-fallback .t{color:#fff;font-size:22px;font-weight:600;letter-spacing:-.015em;max-width:24ch}
+.intro-fallback .q{color:#A1A1A6;font-size:14px}
+
+/* locked curriculum */
+.locked{border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden}
+.locked-row{display:flex;align-items:center;gap:var(--s4);padding:var(--s4) var(--s5);
+  border-bottom:1px solid var(--border);background:var(--surface)}
+.locked-row:last-child{border-bottom:none}
+.locked-row .ic{flex:none;color:var(--muted);font-size:13px}
+.locked-row .tl{flex:1;font-size:16px;font-weight:600;letter-spacing:-.005em}
+.locked-row .mt{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.locked-cta{padding:var(--s6);text-align:center;background:#fff}
+.locked-cta p{color:var(--secondary);font-size:15px;max-width:52ch;margin:0 auto var(--s5)}

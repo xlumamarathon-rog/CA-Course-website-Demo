@@ -140,7 +140,7 @@ export function blankCourse() {
     rating: 4.8, reviews: 0, learners: 0,
     updated: new Date().toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }),
     level: 'Intermediate', lang: 'English',
-    outcomes: [''], forWhom: [''],
+    intro: '', outcomes: [''], forWhom: [''],
     sections: [{ title: 'Section 1', lectures: [{ title: '', dur: '10:00', type: 'video', src: '' }] }],
     published: false
   };

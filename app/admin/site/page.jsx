@@ -12,6 +12,7 @@ const TABS = [
   ['stats', 'Stats & trust'],
   ['partners', 'Partners'],
   ['sections', 'Sections'],
+  ['access', 'Access'],
   ['closing', 'Closing CTA'],
   ['motion', 'Motion']
 ];
@@ -264,6 +265,28 @@ export default function AdminSitePage() {
             <Toggle key={k} on={site.sections[k]} label={label}
               onChange={v => patch('sections', { [k]: v })} />
           ))}
+        </div>
+      )}
+
+      {/* ---------------- ACCESS ---------------- */}
+      {tab === 'access' && (
+        <div className="panel" style={{ maxWidth: 720 }}>
+          <h3 style={{ fontSize: 17, marginBottom: 6 }}>What a signed-out visitor can see</h3>
+          <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 20 }}>
+            The catalogue and sales pages stay public so people can find and evaluate a course —
+            but the lessons themselves do not.
+          </p>
+          <Toggle on={site.access.requireLoginForCurriculum}
+            label="Require sign-in to see the curriculum"
+            hint="Signed-out visitors get the introduction video instead of the lesson list. The player is always gated."
+            onChange={v => patch('access', { requireLoginForCurriculum: v })} />
+          <Toggle on={site.access.showLockedOutline}
+            label="Still show section titles, locked"
+            hint="Off hides the outline completely. On lists section names with a padlock, which converts better."
+            onChange={v => patch('access', { showLockedOutline: v })} />
+          <p style={{ fontSize: 13, color: 'var(--muted)', marginTop: 24, marginBottom: 0 }}>
+            Each course's introduction video is set per course, in Courses → edit → Details.
+          </p>
         </div>
       )}
 

@@ -93,6 +93,19 @@ export default function CourseEditor({ courseId }) {
     } catch (e) { resolve(null); }
   });
 
+  /* intro clip — one per course, shown to signed-out visitors */
+  const introRef = useRef(null);
+  const onPickIntro = async (file) => {
+    if (!file) return;
+    set({ introUpload: file.name, introSize: 'saving…' });
+    try {
+      const id = await mediaPut(file, file.name);
+      set({ intro: 'idb:' + id, introUpload: file.name, introSize: fileSize(file.size) });
+    } catch (e) {
+      set({ intro: URL.createObjectURL(file), introUpload: file.name + ' (session only)', introSize: fileSize(file.size) });
+    }
+  };
+
   const onPick = async (si, li, file) => {
     if (!file) return;
     setLesson(si, li, { upload: file.name, size: 'saving…' });
@@ -265,6 +278,26 @@ export default function CourseEditor({ courseId }) {
                 <div className="field"><label>Review count</label>
                   <input type="number" min="0" value={c.reviews} onChange={e => set({ reviews: e.target.value })} /></div>
               </div>
+
+              <h3 style={{ fontSize: 17, margin: '32px 0 6px' }}>Introduction video</h3>
+              <p style={{ fontSize: 14, color: 'var(--muted)' }}>
+                The only video a signed-out visitor can watch. Shown on the sales page in place of the
+                locked curriculum, so keep it a short pitch rather than real lesson content.
+              </p>
+              <div className="ed-vid" style={{ marginTop: 12 }}>
+                <div className="field" style={{ margin: 0, flex: 1, maxWidth: 'none' }}>
+                  <input value={c.intro || ''} placeholder="Paste a video URL, or upload"
+                    onChange={e => set({ intro: e.target.value, introUpload: '' })} />
+                </div>
+                <span style={{ fontSize: 13, color: 'var(--muted)' }}>or</span>
+                <button className="btn btn-s btn-sm" onClick={() => introRef.current?.click()}>Upload intro</button>
+                <input ref={introRef} type="file" accept="video/*" style={{ display: 'none' }}
+                  onChange={e => { onPickIntro(e.target.files && e.target.files[0]); e.target.value = ''; }} />
+                {c.introUpload && <span className="uploaded">✓ {c.introUpload} · {c.introSize}</span>}
+              </div>
+              <p style={{ fontSize: 13, color: 'var(--muted)', marginTop: 10 }}>
+                Leave blank and the sample clip is used, so the gate can still be demonstrated.
+              </p>
             </div>
           )}
 

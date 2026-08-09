@@ -7,11 +7,16 @@ import BuyCard from '@/components/BuyCard';
 import MobileBuyBar from '@/components/MobileBuyBar';
 import Stars from '@/components/Stars';
 import { FAQS, TESTIMONIALS, totalLessons, parseDur, fmtLong } from '@/lib/data';
-import { useCourses } from '@/lib/store';
+import { useCourses, useAuth } from '@/lib/store';
+import { useSite } from '@/lib/site';
+import IntroVideo from '@/components/IntroVideo';
 
 export default function CourseDetail({ id }) {
   const courses = useCourses();
+  const { isAuthed, ready: authReady } = useAuth();
+  const { site } = useSite();
   const c = courses.get(id);
+  const gateCurriculum = site.access.requireLoginForCurriculum && authReady && !isAuthed;
 
   /* The catalogue falls back to the seed courses, so a known course renders
      immediately (server-side too). Only wait when it genuinely isn't resolved. */
@@ -80,6 +85,17 @@ export default function CourseDetail({ id }) {
               </div>
             </div>
 
+            {/* introduction video — the one thing a signed-out visitor may watch */}
+            {gateCurriculum && (
+              <div style={{ marginTop: 40 }}>
+                <p className="eyebrow">Course introduction</p>
+                <IntroVideo src={c.intro} title={c.title} />
+                <p style={{ fontSize: 14, color: 'var(--muted)', marginTop: 12 }}>
+                  A short preview. The full course opens once you sign in and enrol.
+                </p>
+              </div>
+            )}
+
             {/* outcomes */}
             {(c.outcomes || []).filter(Boolean).length > 0 && (
               <>
@@ -97,13 +113,39 @@ export default function CourseDetail({ id }) {
               </>
             )}
 
-            {/* curriculum */}
+            {/* curriculum — locked until the visitor signs in */}
             <h2 style={{ fontSize: 28, letterSpacing: '-.02em', margin: '64px 0 12px' }}>Curriculum</h2>
             <p style={{ color: 'var(--muted)', fontSize: 15 }} className="tnum">
               {c.sections.length} sections · {total} lessons · {fmtLong(seconds)} of video
             </p>
             <div style={{ marginTop: 24 }}>
-              <Accordion sections={c.sections} />
+              {gateCurriculum ? (
+                <div className="locked">
+                  {site.access.showLockedOutline && c.sections.map((s, i) => (
+                    <div className="locked-row" key={i}>
+                      <span className="ic">🔒</span>
+                      <span className="tl">{s.title}</span>
+                      <span className="mt">{s.lectures.length} lessons</span>
+                    </div>
+                  ))}
+                  <div className="locked-cta">
+                    <p>
+                      Lesson titles and the {total} videos unlock when you sign in. Watch the
+                      introduction above to see how the course is taught.
+                    </p>
+                    <div className="btn-row" style={{ justifyContent: 'center' }}>
+                      <Link href={'/login?next=' + encodeURIComponent('/course/' + c.id)} className="btn btn-p">
+                        Sign in to see the curriculum
+                      </Link>
+                      <Link href={'/login?mode=signup&next=' + encodeURIComponent('/course/' + c.id)} className="btn btn-s">
+                        Create a free account
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <Accordion sections={c.sections} />
+              )}
             </div>
 
             {/* who for */}

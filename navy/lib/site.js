@@ -61,6 +61,10 @@ export const DEFAULT_SITE = {
     primaryLabel: 'Browse masterclasses',
     secondaryLabel: 'Talk to a counsellor'
   },
+  access: {
+    requireLoginForCurriculum: true,   // signed-out visitors see the intro video only
+    showLockedOutline: true            // still list section titles, with a lock
+  },
   motion: {
     reveals: true,       // fade-and-rise on scroll
     counters: true,      // animated stat counters
