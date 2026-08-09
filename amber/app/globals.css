@@ -818,3 +818,21 @@ main{padding-top:calc(var(--demo-h) + var(--ann-h) + var(--nav-h))}
        which pushed the facts row and price to different heights across a
        row. Reserve two lines so every card in a row lines up. */
 .cc .by{min-height:2.6em}
+
+/* ---------- admin: toggles, stat rows, static rotor ---------- */
+.tgl{display:flex;align-items:flex-start;gap:13px;padding:13px 0;cursor:pointer;
+  border-bottom:1px solid var(--border)}
+.tgl:last-of-type{border-bottom:none}
+.tgl input{position:absolute;opacity:0;width:0;height:0}
+.tgl-box{flex:none;width:42px;height:25px;border-radius:999px;background:var(--border-strong);
+  position:relative;transition:background .18s var(--ease);margin-top:1px}
+.tgl-box i{position:absolute;top:3px;left:3px;width:19px;height:19px;border-radius:999px;background:#fff;
+  transition:transform .18s var(--ease);box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.tgl input:checked + .tgl-box{background:var(--ac)}
+.tgl input:checked + .tgl-box i{transform:translateX(17px)}
+.tgl input:focus-visible + .tgl-box{outline:2px solid var(--ac);outline-offset:2px}
+.tgl-tx b{display:block;font-size:15px;font-weight:600}
+.tgl-tx i{display:block;font-style:normal;font-size:13px;color:var(--muted);margin-top:3px}
+.statrow{display:flex;gap:9px;align-items:center;margin-bottom:10px}
+.rotor-static{color:var(--ac-text)}
+[data-theme="navy"] .rotor-static{color:var(--ac)}

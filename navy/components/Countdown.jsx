@@ -12,8 +12,8 @@ export function nextBatchDate(now = new Date()) {
 export const batchLabel = (d) =>
   d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long' });
 
-export default function Countdown({ compact = false }) {
-  const [target] = useState(() => nextBatchDate());
+export default function Countdown({ compact = false, target: given }) {
+  const [target] = useState(() => given || nextBatchDate());
   const [left, setLeft] = useState(null);
 
   useEffect(() => {

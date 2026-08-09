@@ -6,6 +6,7 @@ import { useAuth } from '@/lib/store';
 const NAV = [
   { href: '/admin', label: 'Dashboard', ic: '▦' },
   { href: '/admin/courses', label: 'Courses', ic: '▤' },
+  { href: '/admin/site', label: 'Homepage', ic: '✦' },
   { href: '/admin/students', label: 'Students', ic: '◍' }
 ];
 
