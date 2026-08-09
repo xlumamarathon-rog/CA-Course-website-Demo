@@ -27,14 +27,19 @@ function LoginInner() {
   const submit = (e) => {
     e.preventDefault();
     setErr('');
-    if (mode === 'signup') {
-      signup({ name: f.name, email: f.email });
-      router.push(next);
-      return;
+    try {
+      if (mode === 'signup') {
+        signup({ name: f.name, email: f.email });
+        router.push(next);
+        return;
+      }
+      const res = login(f.email, f.password);
+      if (res.error) { setErr(res.error); return; }
+      router.push(res.user.role === 'admin' && next === '/dashboard' ? '/admin' : next);
+    } catch (ex) {
+      // surface it rather than dying silently in the handler
+      setErr('Sign-in failed: ' + (ex && ex.message ? ex.message : String(ex)));
     }
-    const res = login(f.email, f.password);
-    if (res.error) { setErr(res.error); return; }
-    router.push(res.user.role === 'admin' && next === '/dashboard' ? '/admin' : next);
   };
 
   if (user) {
