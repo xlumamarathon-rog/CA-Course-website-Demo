@@ -802,3 +802,14 @@ main{padding-top:calc(var(--demo-h) + var(--ann-h) + var(--nav-h))}
   .sk,.sk-btn{animation:none}
   .ann-dot{animation:none}
 }
+
+/* 10. Badge vs thumbnail title, properly this time. Anchoring the title to
+       the bottom was not enough: a four-line title is taller than the tile's
+       content box, so it still rode up under the badge. Reserve the badge's
+       row as top padding on the tile itself and clamp the title to 3 lines,
+       so the text can never reach it. */
+.thumb{padding:54px var(--s5) var(--s5);align-items:flex-end}
+.thumb .tt{padding-top:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;
+  overflow:hidden;max-width:82%}
+.thumb.sm{padding:38px var(--s4) var(--s4)}
+.thumb.sm .tt{-webkit-line-clamp:2}
