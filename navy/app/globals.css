@@ -1022,7 +1022,9 @@ main{padding-top:calc(var(--demo-h) + var(--ann-h) + var(--nav-h))}
   box-shadow:var(--sh-md);padding:12px 16px}
 .sc-chip b{display:block;font-size:14px;font-weight:600}
 .sc-chip i{display:block;font-style:normal;font-size:12px;color:var(--muted);margin-top:2px}
-.sc-chip-a{left:-26px;top:32%}
-.sc-chip-b{right:-22px;bottom:14%}
+/* Sit the chips on the card's corners, over chrome and whitespace — the first
+   placement had them covering the lesson kicker and a curriculum row. */
+.sc-chip-a{left:-30px;top:-20px}
+.sc-chip-b{right:-26px;bottom:-22px}
 @media(max-width:1200px){.sc-chip{display:none}}
 @media(max-width:1000px){.showcase{display:none}}
