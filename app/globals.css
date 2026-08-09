@@ -912,3 +912,18 @@ main{padding-top:calc(var(--demo-h) + var(--ann-h) + var(--nav-h))}
 .buyband-tx b{display:block;font-size:17px;font-weight:600;letter-spacing:-.01em}
 .buyband-tx i{display:block;font-style:normal;font-size:14px;color:var(--secondary);margin-top:5px;max-width:56ch}
 .buyband-buy{display:flex;align-items:center;gap:var(--s4);flex-wrap:wrap}
+
+/* the curriculum checkbox is an actual control */
+.plec .cb{cursor:pointer;transition:border-color .15s var(--ease),background .15s var(--ease)}
+.plec .cb:hover{border-color:var(--ac)}
+.plec.done .cb:hover{background:var(--success-deep)}
+
+/* On a phone the announcement bar had the offer, a live countdown, the coupon
+   chip, a CTA and a close button competing for ~360px, so the countdown was
+   clipped mid-digit. Drop it below 700px — the offer and the code are what
+   matter there, and the closing CTA still carries a full countdown. */
+@media(max-width:700px){
+  .ann-in .cd-inline,
+  .ann-in .cd-skel{display:none}
+  .ann-msg{gap:6px}
+}

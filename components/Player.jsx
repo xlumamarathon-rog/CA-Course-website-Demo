@@ -74,13 +74,17 @@ export default function Player({ course }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [Math.floor(time / 5), idx, hydrated]);
 
-  const goTo = useCallback((i) => {
+  /* Advancing past a lesson completes it, the way every course player behaves.
+     Only forward moves count — jumping back to revisit should not tick things. */
+  const goTo = useCallback((i, { complete = false } = {}) => {
     if (i < 0 || i >= lessons.length) return;
+    if (complete && i > idx) markDone(idx);
     setIdx(i);
     const sIdx = lessons[i].s;
     setOpenSec(o => Object.assign({}, o, { [sIdx]: true }));
     if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [lessons]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lessons, idx]);
 
   const finishLesson = useCallback(() => {
     markDone(idx);
@@ -174,7 +178,7 @@ export default function Player({ course }) {
       if (e.code === 'Space' || e.key === 'k') { e.preventDefault(); toggle(); }
       else if (e.key === 'ArrowRight') nudge(10);
       else if (e.key === 'ArrowLeft') nudge(-10);
-      else if (e.key === 'n' && nextIdx !== null) goTo(nextIdx);
+      else if (e.key === 'n' && nextIdx !== null) goTo(nextIdx, { complete: true });
       else if (e.key === 'f') fullscreen();
     };
     window.addEventListener('keydown', onKey);
@@ -302,7 +306,7 @@ export default function Player({ course }) {
               <svg viewBox="0 0 24 24"><path d="M12 5V1l5 5-5 5V7a6 6 0 1 0 6 6h2a8 8 0 1 1-8-8z" /></svg>
             </button>
             {nextIdx !== null && (
-              <button className="cbtn" onClick={() => goTo(nextIdx)} aria-label="Next lesson">
+              <button className="cbtn" onClick={() => goTo(nextIdx, { complete: true })} aria-label="Next lesson">
                 <svg viewBox="0 0 24 24"><path d="M6 5l9 7-9 7V5zm10 0h2v14h-2z" /></svg>
               </button>
             )}
@@ -346,7 +350,7 @@ export default function Player({ course }) {
               <div className="d">{next.sTitle} · {next.lesson.dur}</div>
             </div>
             <div className="acts">
-              <button className="btn btn-p" onClick={() => goTo(nextIdx)}>Next chapter →</button>
+              <button className="btn btn-p" onClick={() => goTo(nextIdx, { complete: true })}>Next chapter →</button>
               {idx > 0 && <button className="btn btn-s" onClick={() => goTo(idx - 1)}>Previous</button>}
             </div>
           </div>
@@ -487,7 +491,16 @@ export default function Player({ course }) {
                         className={'plec' + (flat === idx ? ' cur' : '') + (done[flat] ? ' done' : '')}
                         onClick={() => goTo(flat)}
                       >
-                        <span className="cb">{done[flat] ? '✓' : ''}</span>
+                        <span
+                          className="cb"
+                          role="checkbox"
+                          aria-checked={!!done[flat]}
+                          aria-label={(done[flat] ? 'Mark incomplete: ' : 'Mark complete: ') + l.title}
+                          onClick={(ev) => {
+                            ev.stopPropagation();          // tick without navigating
+                            done[flat] ? unmarkDone(flat) : markDone(flat);
+                          }}
+                        >{done[flat] ? '✓' : ''}</span>
                         <span className="tx">
                           <span className="tl">{l.title}</span>
                           <span className="dm">
