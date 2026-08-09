@@ -21,8 +21,8 @@ import {
    ========================================================= */
 
 export const SCHEMA_VERSION = 1;
-const EVT = 'tb:change';
-const LS_DOC = 'tb.db';                    // fallback document
+const EVT = 'll:change';
+const LS_DOC = 'll.db';                    // fallback document
 const LS_LEGACY = ['theme','courses','purchases','enrolled','progress','notes',
                    'cart','user','site','announcementHidden'];
 const browser = () => typeof window !== 'undefined';
@@ -63,10 +63,10 @@ function adoptLegacy() {
   let found = false;
   LS_LEGACY.forEach(k => {
     try {
-      const raw = window.localStorage.getItem('tb.' + k);
+      const raw = window.localStorage.getItem('ll.' + k);
       if (raw === null) return;
       cache.set(k, JSON.parse(raw));
-      window.localStorage.removeItem('tb.' + k);
+      window.localStorage.removeItem('ll.' + k);
       found = true;
     } catch (e) {}
   });
@@ -198,7 +198,7 @@ export function exportDbFile(filename) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = filename || ('thinkingbridge-demo-' + new Date().toISOString().slice(0, 10) + '.json');
+  a.download = filename || ('ledgerline-demo-' + new Date().toISOString().slice(0, 10) + '.json');
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }

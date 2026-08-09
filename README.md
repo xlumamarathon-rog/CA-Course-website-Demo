@@ -1,4 +1,4 @@
-# Thinking Bridge — functional client demo
+# Ledgerline — functional client demo
 
 A complete, clickable finance-course platform with a working **admin backend**, built in
 **Next.js 15 (App Router)**. No server, no database: courses, accounts, purchases and progress
@@ -62,7 +62,7 @@ npm start
 | `/jobs` `/about` `/contact` `/login` | Job board, company, counsellor form, sign-in with one-click demo credentials |
 | `404` | Branded — keeps the header, footer and type |
 
-**Admin backend** (`admin@thinkingbridge.in` only)
+**Admin backend** (`admin@ledgerline.in` only)
 
 | Route | What it does |
 |---|---|
@@ -82,9 +82,9 @@ Listed on the sign-in page as clickable cards — **clicking one fills the email
 
 | Role | Email | Password | Starting state |
 |---|---|---|---|
-| Admin | `admin@thinkingbridge.in` | `admin123` | Full backend; can preview any course |
-| Learner | `learner@thinkingbridge.in` | `learner123` | Already owns Audit MasterClass + Placement Program |
-| Learner | `student@thinkingbridge.in` | `student123` | Owns nothing — use this to demo the paywall |
+| Admin | `admin@ledgerline.in` | `admin123` | Full backend; can preview any course |
+| Learner | `learner@ledgerline.in` | `learner123` | Already owns Audit MasterClass + Placement Program |
+| Learner | `student@ledgerline.in` | `student123` | Owns nothing — use this to demo the paywall |
 
 Sign-up also works and creates a fresh local learner. Edit the list in `lib/accounts.js`.
 

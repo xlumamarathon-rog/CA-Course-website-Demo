@@ -19,7 +19,7 @@ describe('signed-out visitors cannot see course content', () => {
   });
 
   it('reveals the curriculum once signed in', async () => {
-    write('user', { name: 'Priya', email: 'learner@thinkingbridge.in', role: 'user' });
+    write('user', { name: 'Priya', email: 'learner@ledgerline.in', role: 'user' });
     render(<CourseDetail id="audit" />);
 
     expect(await screen.findByText('How an audit actually gets staffed and run')).toBeTruthy();
@@ -27,8 +27,8 @@ describe('signed-out visitors cannot see course content', () => {
   });
 
   it('offers the buying option to a signed-in visitor who has not purchased', async () => {
-    write('user', { name: 'Rahul', email: 'student@thinkingbridge.in', role: 'user' });
-    write('purchases', { 'student@thinkingbridge.in': [] });
+    write('user', { name: 'Rahul', email: 'student@ledgerline.in', role: 'user' });
+    write('purchases', { 'student@ledgerline.in': [] });
     render(<CourseDetail id="audit" />);
 
     // curriculum is visible, but the purchase prompt is there
@@ -40,8 +40,8 @@ describe('signed-out visitors cannot see course content', () => {
   });
 
   it('drops the purchase prompt once the course is owned', async () => {
-    write('user', { name: 'Priya', email: 'learner@thinkingbridge.in', role: 'user' });
-    write('purchases', { 'learner@thinkingbridge.in': ['audit'] });
+    write('user', { name: 'Priya', email: 'learner@ledgerline.in', role: 'user' });
+    write('purchases', { 'learner@ledgerline.in': ['audit'] });
     render(<CourseDetail id="audit" />);
 
     await waitFor(() =>

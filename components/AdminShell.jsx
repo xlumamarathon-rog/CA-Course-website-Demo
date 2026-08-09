@@ -32,14 +32,11 @@ export default function AdminShell({ children, title, action }) {
               : 'Sign in with the admin account to manage courses.'}
           </p>
           <div className="btn-row" style={{ justifyContent: 'center' }}>
-            <Link href="/login?next=/admin" className="btn btn-p">
-              {user ? 'Switch account' : 'Sign in as admin'}
+            <Link href="/admin/login" className="btn btn-p">
+              {user ? 'Switch to a staff account' : 'Staff sign-in'}
             </Link>
             <Link href="/" className="btn btn-s">Back to site</Link>
           </div>
-          <p style={{ fontSize: 13, color: 'var(--muted)', marginTop: 24, marginBottom: 0 }} className="mono">
-            admin@thinkingbridge.in · admin123
-          </p>
         </div>
       </section>
     );
@@ -49,10 +46,10 @@ export default function AdminShell({ children, title, action }) {
     <div className="adm">
       <aside className="adm-side">
         <div className="adm-brand">
-          <span className="mark">TB</span>
+          <span className="mark">LL</span>
           <span>
             <b>Admin</b>
-            <i>Thinking Bridge</i>
+            <i>Ledgerline</i>
           </span>
         </div>
         <nav>

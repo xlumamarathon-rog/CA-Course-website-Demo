@@ -7,8 +7,8 @@ export async function generateMetadata({ params }) {
   const { id } = await params;
   const c = findCourse(id);
   return c
-    ? { title: c.title + ' — Thinking Bridge', description: c.tag }
-    : { title: 'Course — Thinking Bridge' };
+    ? { title: c.title + ' — Ledgerline', description: c.tag }
+    : { title: 'Course — Ledgerline' };
 }
 
 export default async function CoursePage({ params }) {

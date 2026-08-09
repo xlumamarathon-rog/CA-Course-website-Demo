@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Footer from '@/components/Footer';
 import { JOBS, HIRERS } from '@/lib/data';
 
-export const metadata = { title: 'Finance jobs — Thinking Bridge' };
+export const metadata = { title: 'Finance jobs — Ledgerline' };
 
 export default function JobsPage() {
   return (

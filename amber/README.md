@@ -42,9 +42,9 @@ Amber is a **fill-only** accent: buttons take amber backgrounds with ink (#1D1D1
 
 | Role | Email | Password |
 |---|---|---|
-| Admin | `admin@thinkingbridge.in` | `admin123` |
-| Learner (owns Audit) | `learner@thinkingbridge.in` | `learner123` |
-| Learner (owns nothing) | `student@thinkingbridge.in` | `student123` |
+| Admin | `admin@ledgerline.in` | `admin123` |
+| Learner (owns Audit) | `learner@ledgerline.in` | `learner123` |
+| Learner (owns nothing) | `student@ledgerline.in` | `student123` |
 
 Listed on the sign-in page as one-click fill buttons. Checkout coupon: **`COMBO30`**.
 

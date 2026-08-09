@@ -12,7 +12,7 @@ import { findCourse } from '@/lib/data';
 import { read as dbRead, write as dbWrite } from '@/lib/storage';
 const read = k => dbRead(k, null);
 const write = (k, v) => dbWrite(k, v);
-const signIn = (email = 'learner@thinkingbridge.in', role = 'user') => {
+const signIn = (email = 'learner@ledgerline.in', role = 'user') => {
   write('user', { name: 'Priya Sharma', email, role });
   write('purchases', { [email]: ['audit'] });
 };
@@ -79,8 +79,8 @@ describe('course player', () => {
 describe('checkout', () => {
   it('applies COMBO30, recalculates, and records the purchase', async () => {
     const u = userEvent.setup();
-    write('user', { name: 'Rahul Verma', email: 'student@thinkingbridge.in', role: 'user' });
-    write('purchases', { 'student@thinkingbridge.in': [] });
+    write('user', { name: 'Rahul Verma', email: 'student@ledgerline.in', role: 'user' });
+    write('purchases', { 'student@ledgerline.in': [] });
     render(<Checkout course={findCourse('audit')} />);
 
     // list price before the coupon
@@ -90,7 +90,7 @@ describe('checkout', () => {
     // database has hydrated, so wait for it rather than asserting instantly
     expect(screen.getByDisplayValue('4242 4242 4242 4242')).toBeTruthy();
     expect(screen.getByDisplayValue('12 / 28')).toBeTruthy();
-    expect(await screen.findByDisplayValue('student@thinkingbridge.in')).toBeTruthy();
+    expect(await screen.findByDisplayValue('student@ledgerline.in')).toBeTruthy();
 
     // a bad coupon is rejected
     await u.type(screen.getByPlaceholderText('Coupon code'), 'NOPE99');
@@ -107,14 +107,14 @@ describe('checkout', () => {
     await u.click(screen.getByRole('button', { name: /Pay ₹2,999 securely/ }));
     expect(await screen.findByText('You are in.')).toBeTruthy();
     await waitFor(() =>
-      expect(read('purchases')['student@thinkingbridge.in']).toContain('audit'));
+      expect(read('purchases')['student@ledgerline.in']).toContain('audit'));
   });
 });
 
 describe('admin backend', () => {
   it('creates and publishes a course that then appears in the public catalogue', async () => {
     const u = userEvent.setup();
-    write('user', { name: 'Admin', email: 'admin@thinkingbridge.in', role: 'admin' });
+    write('user', { name: 'Admin', email: 'admin@ledgerline.in', role: 'admin' });
 
     const { unmount } = render(<CourseEditor />);
     await screen.findByText('New course');
@@ -152,7 +152,7 @@ describe('admin backend', () => {
     // simulate the admin toggling it to draft
     const { COURSES } = await import('@/lib/data');
     write('courses', COURSES.map(c => c.id === 'audit' ? { ...c, published: false } : { ...c, published: true }));
-    window.dispatchEvent(new CustomEvent('tb:change', { detail: { key: 'courses' } }));
+    window.dispatchEvent(new CustomEvent('ll:change', { detail: { key: 'courses' } }));
 
     await waitFor(() => expect(screen.getByText(/Showing 5 of 5 courses/)).toBeTruthy());
     expect(screen.queryAllByText('Audit MasterClass — Statutory & Internal').length).toBe(0);

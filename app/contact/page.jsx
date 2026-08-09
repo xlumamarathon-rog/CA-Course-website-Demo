@@ -61,7 +61,7 @@ export default function ContactPage() {
               <h3 style={{ fontSize: 19, marginBottom: 20 }}>Reach us directly</h3>
               <table className="tb">
                 <tbody>
-                  <tr><td style={{ color: 'var(--muted)' }}>Email</td><td>connect@thinkingbridge.in</td></tr>
+                  <tr><td style={{ color: 'var(--muted)' }}>Email</td><td>connect@ledgerline.in</td></tr>
                   <tr><td style={{ color: 'var(--muted)' }}>Phone</td><td className="tnum">9650147313</td></tr>
                   <tr><td style={{ color: 'var(--muted)' }}>Hours</td><td>Mon–Sat, 10am–7pm IST</td></tr>
                   <tr><td style={{ color: 'var(--muted)' }}>Response</td><td>Within 1 working day</td></tr>

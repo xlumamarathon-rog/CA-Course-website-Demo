@@ -17,7 +17,7 @@
    unavailable (private windows, ancient browsers).
    ========================================================= */
 
-export const DB_NAME = 'thinkingbridge';
+export const DB_NAME = 'ledgerline';
 export const DB_VERSION = 1;
 export const STORE_KV = 'kv';
 export const STORE_MEDIA = 'media';

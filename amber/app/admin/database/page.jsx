@@ -30,8 +30,8 @@ export default function AdminDatabase() {
   useEffect(() => {
     refresh();
     const h = () => refresh();
-    window.addEventListener('tb:change', h);
-    return () => window.removeEventListener('tb:change', h);
+    window.addEventListener('ll:change', h);
+    return () => window.removeEventListener('ll:change', h);
   }, []);
 
   const say = (kind, text) => { setMsg({ kind, text }); setTimeout(() => setMsg(null), 3500); };
@@ -96,7 +96,7 @@ export default function AdminDatabase() {
       <p style={{ color: 'var(--secondary)', fontSize: 15, maxWidth: '78ch', marginTop: 0 }}>
         The demo runs on a real local database in the browser —{' '}
         <b>{engine === 'indexeddb' ? 'IndexedDB' : engine === 'localstorage' ? 'localStorage (fallback)' : 'memory'}</b>,
-        database <code className="mono">thinkingbridge</code>. Two stores: <code className="mono">kv</code> holds the
+        database <code className="mono">ledgerline</code>. Two stores: <code className="mono">kv</code> holds the
         JSON collections, <code className="mono">media</code> holds uploaded video as real Blobs. Nothing leaves the device.
       </p>
 

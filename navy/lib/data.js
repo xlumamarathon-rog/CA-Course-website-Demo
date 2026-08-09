@@ -190,7 +190,7 @@ export const COURSES = [
   id:"placement", cat:"free", badge:"Free",
   title:"Placement Program — Interview & Resume Intensive",
   tag:"Get shortlisted, then convert. Free for every learner.",
-  instructor:"Thinking Bridge Team", exFirm:"Placement cell", initials:"TB",
+  instructor:"Ledgerline Team", exFirm:"Placement cell", initials:"LL",
   hours:6, lectures:14, templates:5, rating:4.6, reviews:842, learners:22400,
   price:0, mrp:0, updated:"Jul 2026", level:"All levels", lang:"English + Hindi",
   outcomes:[
@@ -199,7 +199,7 @@ export const COURSES = [
     "Structure a technical answer under pressure",
     "Negotiate a first offer without losing it"
   ],
-  forWhom:["Every Thinking Bridge learner","Final-year students","Anyone switching into finance"],
+  forWhom:["Every Ledgerline learner","Final-year students","Anyone switching into finance"],
   sections:[
     sec("Getting shortlisted",[
       lec("The six-second resume scan","8:10"),
@@ -240,7 +240,7 @@ export const TESTIMONIALS = [
 ];
 
 export const EXPERTS = [
-  {n:"CA Pooja Sharma", s:"Soft Skills · Marketing", y:"10+ yrs", f:"Thinking Bridge", i:"PS"},
+  {n:"CA Pooja Sharma", s:"Soft Skills · Marketing", y:"10+ yrs", f:"Ledgerline", i:"PS"},
   {n:"CA Chirag Kagzi", s:"Indirect Tax · GST", y:"10+ yrs", f:"Ex-Deloitte", i:"CK"},
   {n:"CA Nikhil Dhingra", s:"Risk · Internal Audit", y:"10+ yrs", f:"Ex-Amazon", i:"ND"},
   {n:"CA Sanat Goyal", s:"Transfer Pricing · Direct Tax", y:"10+ yrs", f:"Ex-EY", i:"SG"}

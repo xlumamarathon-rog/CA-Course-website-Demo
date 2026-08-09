@@ -4,7 +4,7 @@ import AnnouncementBar from '@/components/AnnouncementBar';
 import { ConfirmProvider } from '@/components/Confirm';
 
 export const metadata = {
-  title: 'Thinking Bridge — Practical finance training & placements',
+  title: 'Ledgerline — Practical finance training & placements',
   description: 'Practical, hands-on finance masterclasses taught by Big 4 professionals. 80,000 learners, 20,000 placements.'
 };
 

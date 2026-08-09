@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Footer from '@/components/Footer';
 import { EXPERTS, HIRERS } from '@/lib/data';
 
-export const metadata = { title: 'About — Thinking Bridge' };
+export const metadata = { title: 'About — Ledgerline' };
 
 export default function AboutPage() {
   return (
@@ -13,7 +13,7 @@ export default function AboutPage() {
           We teach the file, not the syllabus.
         </h1>
         <p style={{ fontSize: 21, color: 'var(--secondary)', maxWidth: '62ch' }}>
-          Thinking Bridge started because qualified finance professionals kept arriving at their first job
+          Ledgerline started because qualified finance professionals kept arriving at their first job
           able to quote a standard but unable to open a working paper. Every course here is built backwards
           from a real deliverable.
         </p>

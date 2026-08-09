@@ -14,7 +14,7 @@ export default function Footer() {
         <div className="ft-grid">
           <div>
             <Link href="/" className="logo" style={{ color: '#fff', marginBottom: 16 }}>
-              <span className="mark">TB</span><span>THINKING BRIDGE</span>
+              <span className="mark">LL</span><span>LEDGERLINE</span>
             </Link>
             <p style={{ maxWidth: '32ch', marginTop: 16 }}>
               Practical finance training built by people who did the work — then placed 20,000 others who wanted to.
@@ -28,8 +28,8 @@ export default function Footer() {
           ))}
         </div>
         <div className="ft-bot">
-          <span>© {new Date().getFullYear()} Thinking Bridge. All rights reserved.</span>
-          <span>connect@thinkingbridge.in · 9650147313</span>
+          <span>© {new Date().getFullYear()} Ledgerline. All rights reserved.</span>
+          <span>connect@ledgerline.in · 9650147313</span>
         </div>
       </div>
     </footer>
