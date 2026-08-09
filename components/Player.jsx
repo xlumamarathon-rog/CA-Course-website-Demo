@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { VID, flatLessons, parseDur, fmtTime } from '@/lib/data';
-import { useProgress, useNotes } from '@/lib/storage';
+import { useProgress, useNotes, useMediaSrc } from '@/lib/storage';
 
 const AUTO_NEXT_SECONDS = 5;
 const SPEEDS = [1, 1.25, 1.5, 1.75, 2];
@@ -191,6 +191,8 @@ export default function Player({ course }) {
   const progressPct = dur ? Math.min(100, (time / dur) * 100) : 0;
   const RING = 2 * Math.PI * 30;
 
+  const resolvedSrc = useMediaSrc(lesson && lesson.src ? lesson.src : '');
+
   const files = useMemo(
     () => lessons.filter(x => x.lesson.type === 'file').map(x => x.lesson),
     [lessons]
@@ -211,9 +213,9 @@ export default function Player({ course }) {
             onLoadedMetadata={e => { if (e.currentTarget.duration) setDur(e.currentTarget.duration); }}
             onEnded={finishLesson}
             onError={() => setSim(true)}
-            key={(lesson && lesson.src) || 'default'}
+            key={resolvedSrc || 'default'}
           >
-            <source src={(lesson && lesson.src) || VID} type="video/mp4" />
+            <source src={resolvedSrc || VID} type="video/mp4" />
           </video>
 
           {/* fallback / non-video stage */}

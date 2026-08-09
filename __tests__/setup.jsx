@@ -1,5 +1,6 @@
 import { vi, beforeEach } from 'vitest';
 import { cleanup } from '@testing-library/react';
+import { clearAll, whenReady } from '@/lib/storage';
 import React from 'react';
 
 /* ---- next/navigation ---- */
@@ -30,9 +31,11 @@ if (!window.matchMedia) {
     addEventListener() {}, removeEventListener() {} });
 }
 
-beforeEach(() => {
+beforeEach(async () => {
   cleanup();
   window.localStorage.clear();
+  await whenReady();   // the database hydrates asynchronously
+  clearAll();          // wipe the in-memory cache too, so tests never leak into each other
   push.mockClear();
   globalThis.__SEARCH__ = '';
   window.scrollTo = () => {};

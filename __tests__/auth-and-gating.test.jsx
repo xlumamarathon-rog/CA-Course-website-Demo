@@ -5,8 +5,9 @@ import LoginPage from '@/app/login/page';
 import LearnView from '@/components/LearnView';
 import { push } from './setup.jsx';
 
-const read = k => JSON.parse(window.localStorage.getItem('tb.' + k) || 'null');
-const write = (k, v) => window.localStorage.setItem('tb.' + k, JSON.stringify(v));
+import { read as dbRead, write as dbWrite } from '@/lib/storage';
+const read = k => dbRead(k, null);
+const write = (k, v) => dbWrite(k, v);
 
 describe('sign-in page', () => {
   it('lists the three demo accounts under the button', async () => {

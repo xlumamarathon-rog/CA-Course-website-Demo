@@ -1,75 +1,228 @@
 'use client';
 import { useState, useEffect, useCallback, useRef } from 'react';
+import {
+  idbAvailable, kvGetAll, kvSet, kvClear,
+  mediaPut, mediaList, mediaDelete, mediaClear, mediaUrl, estimate, deleteDatabase
+} from './idb';
 
 /* =========================================================
-   DEVICE STORAGE
-   Everything the user does lives on their own device.
-   No backend, no database, no accounts on a server.
-   Keys are namespaced `tb.` so they never collide.
+   THE LOCAL DATABASE
+   ---------------------------------------------------------
+   Engine: IndexedDB (see lib/idb.js). Falls back to
+   localStorage automatically when IndexedDB is unavailable.
+
+   IndexedDB is asynchronous, but the whole app reads state
+   synchronously during render. So the document is hydrated
+   into an in-memory cache once on boot, reads are served
+   from that cache, and writes are applied to the cache
+   immediately then flushed to disk in the background. The
+   key-based API below is unchanged from the localStorage
+   version, so no component knows the engine swapped.
    ========================================================= */
 
-const P = 'tb.';
+export const SCHEMA_VERSION = 1;
 const EVT = 'tb:change';
+const LS_DOC = 'tb.db';                    // fallback document
+const LS_LEGACY = ['theme','courses','purchases','enrolled','progress','notes',
+                   'cart','user','site','announcementHidden'];
 const browser = () => typeof window !== 'undefined';
 
 export const KEYS = {
-  theme:     'theme',      // 'amber' | 'navy'
-  courses:   'courses',    // the course catalogue the admin panel edits
-  purchases: 'purchases',  // { 'learner@x.in': ['audit'] }  — per account
-  enrolled:  'enrolled',   // legacy single-user list (kept for compatibility)
-  progress:  'progress',   // { audit: { done:{'3':true}, last:3, sec:{'3':128} } }
-  notes:     'notes',      // { audit: [{ idx, at, text, ts }] }
-  cart:      'cart',       // courseId | null
-  user:      'user'        // { name, email, role }
+  theme:'theme', courses:'courses', purchases:'purchases', progress:'progress',
+  notes:'notes', cart:'cart', user:'user', site:'site'
 };
 
-export function read(key, fallback) {
-  if (!browser()) return fallback;
+/* ---------- in-memory cache ---------- */
+const cache = new Map();
+let engine = 'memory';            // 'indexeddb' | 'localstorage' | 'memory'
+let ready = false;
+let hydration = null;
+let lastWrite = null;
+
+const emit = (key) => {
+  if (browser()) window.dispatchEvent(new CustomEvent(EVT, { detail: { key } }));
+};
+
+/* ---------- fallback document I/O ---------- */
+function lsRead() {
   try {
-    const raw = window.localStorage.getItem(P + key);
-    return raw === null ? fallback : JSON.parse(raw);
-  } catch (e) { return fallback; }
+    const raw = window.localStorage.getItem(LS_DOC);
+    if (raw) { const p = JSON.parse(raw); if (p && p.data) return p.data; }
+  } catch (e) {}
+  return null;
+}
+function lsWriteAll() {
+  try {
+    window.localStorage.setItem(LS_DOC, JSON.stringify({
+      __v: SCHEMA_VERSION, updatedAt: new Date().toISOString(), data: Object.fromEntries(cache)
+    }));
+  } catch (e) {}
+}
+/* fold pre-existing per-key localStorage into the cache, once */
+function adoptLegacy() {
+  let found = false;
+  LS_LEGACY.forEach(k => {
+    try {
+      const raw = window.localStorage.getItem('tb.' + k);
+      if (raw === null) return;
+      cache.set(k, JSON.parse(raw));
+      window.localStorage.removeItem('tb.' + k);
+      found = true;
+    } catch (e) {}
+  });
+  return found;
+}
+
+/* ---------- boot ---------- */
+export function hydrate() {
+  if (hydration) return hydration;
+  if (!browser()) { ready = true; return Promise.resolve(); }
+
+  hydration = (async () => {
+    let migrated = false;
+
+    if (idbAvailable()) {
+      try {
+        const rows = await kvGetAll();
+        rows.forEach(r => cache.set(r.key, r.value));
+        engine = 'indexeddb';
+
+        if (rows.length === 0) {
+          // first run on this engine — bring anything across from localStorage
+          const doc = lsRead();
+          if (doc) { Object.keys(doc).forEach(k => cache.set(k, doc[k])); migrated = true; }
+          if (adoptLegacy()) migrated = true;
+          if (migrated) {
+            await Promise.all(Array.from(cache.entries()).map(([k, v]) => kvSet(k, v).catch(() => {})));
+            try { window.localStorage.removeItem(LS_DOC); } catch (e) {}
+          }
+        }
+      } catch (e) {
+        engine = 'localstorage';
+      }
+    } else {
+      engine = 'localstorage';
+    }
+
+    if (engine === 'localstorage') {
+      const doc = lsRead();
+      if (doc) Object.keys(doc).forEach(k => cache.set(k, doc[k]));
+      else if (adoptLegacy()) lsWriteAll();
+    }
+
+    ready = true;
+    emit('*');
+  })();
+
+  return hydration;
+}
+
+if (browser()) hydrate();
+
+export const whenReady = () => hydration || hydrate();
+export const isReady = () => ready;
+export const getEngine = () => engine;
+
+/* ---------- key API ---------- */
+export function read(key, fallback) {
+  return cache.has(key) ? cache.get(key) : fallback;
 }
 
 export function write(key, value) {
-  if (!browser()) return;
-  try {
-    window.localStorage.setItem(P + key, JSON.stringify(value));
-    window.dispatchEvent(new CustomEvent(EVT, { detail: { key } }));
-  } catch (e) { /* storage full or blocked — fail quietly */ }
+  cache.set(key, value);
+  lastWrite = new Date().toISOString();
+  if (browser()) {
+    if (engine === 'indexeddb') kvSet(key, value).catch(() => { engine = 'localstorage'; lsWriteAll(); });
+    else lsWriteAll();
+  }
+  emit(key);
 }
 
 export function clearAll() {
+  cache.clear();
+  if (browser()) {
+    if (engine === 'indexeddb') { kvClear().catch(() => {}); mediaClear().catch(() => {}); }
+    else { try { window.localStorage.removeItem(LS_DOC); } catch (e) {} }
+  }
+  emit('*');
+}
+
+export const dumpAll = () => Object.fromEntries(cache);
+
+/* ---------- database-level helpers ---------- */
+export const getDb = () => ({
+  __v: SCHEMA_VERSION,
+  engine,
+  updatedAt: lastWrite,
+  data: Object.fromEntries(cache)
+});
+
+export function replaceDb(next) {
+  if (!next || typeof next !== 'object') return { error: 'That is not a JSON object.' };
+  const data = next.data && typeof next.data === 'object' ? next.data : next;
+  cache.clear();
+  Object.keys(data).forEach(k => cache.set(k, data[k]));
+  lastWrite = new Date().toISOString();
+  if (browser()) {
+    if (engine === 'indexeddb') {
+      kvClear()
+        .then(() => Promise.all(Array.from(cache.entries()).map(([k, v]) => kvSet(k, v))))
+        .catch(() => {});
+    } else lsWriteAll();
+  }
+  emit('*');
+  return { ok: true };
+}
+
+export function dbStats() {
+  const json = JSON.stringify(getDb());
+  const count = (v) => Array.isArray(v) ? v.length
+    : (v && typeof v === 'object' ? Object.keys(v).length : (v == null ? 0 : 1));
+  return {
+    version: SCHEMA_VERSION,
+    engine,
+    updatedAt: lastWrite,
+    bytes: json.length,
+    collections: Array.from(cache.keys()).map(k => ({
+      key: k,
+      type: Array.isArray(cache.get(k)) ? 'array'
+        : (cache.get(k) && typeof cache.get(k) === 'object' ? 'map' : typeof cache.get(k)),
+      count: count(cache.get(k))
+    }))
+  };
+}
+
+export function exportDbFile(filename) {
   if (!browser()) return;
-  try {
-    Object.values(KEYS).forEach(k => window.localStorage.removeItem(P + k));
-    window.dispatchEvent(new CustomEvent(EVT, { detail: { key: '*' } }));
-  } catch (e) {}
+  const blob = new Blob([JSON.stringify(getDb(), null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename || ('thinkingbridge-demo-' + new Date().toISOString().slice(0, 10) + '.json');
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-export function dumpAll() {
-  const out = {};
-  Object.entries(KEYS).forEach(([name, k]) => { out[name] = read(k, null); });
-  return out;
-}
+/* media passthrough — uploaded video lives in its own store */
+export { mediaPut, mediaList, mediaDelete, mediaClear, mediaUrl, estimate, deleteDatabase };
 
-/* ---- React binding -------------------------------------------------
-   Starts from `fallback` so server and first client render match
-   (no hydration mismatch), then fills in from the device on mount.   */
+/* ---------- React binding ---------- */
 export function useStored(key, fallback) {
   const [value, setValue] = useState(fallback);
-  const [ready, setReady] = useState(false);
+  const [rdy, setRdy] = useState(false);
 
   useEffect(() => {
-    setValue(read(key, fallback));
-    setReady(true);
+    let alive = true;
+    whenReady().then(() => {
+      if (!alive) return;
+      setValue(read(key, fallback));
+      setRdy(true);
+    });
     const handler = (e) => {
-      if (!e.detail || e.detail.key === key || e.detail.key === '*') {
-        setValue(read(key, fallback));
-      }
+      if (!e.detail || e.detail.key === key || e.detail.key === '*') setValue(read(key, fallback));
     };
     window.addEventListener(EVT, handler);
-    return () => window.removeEventListener(EVT, handler);
+    return () => { alive = false; window.removeEventListener(EVT, handler); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
 
@@ -83,12 +236,12 @@ export function useStored(key, fallback) {
     write(key, resolved);
   }, [key]);
 
-  return [value, set, ready];
+  return [value, set, rdy];
 }
 
-/* ---- domain helpers ---- */
+/* ---------- domain helpers ---------- */
 export function useProgress(courseId) {
-  const [all, setAll, ready] = useStored(KEYS.progress, {});
+  const [all, setAll, rdy] = useStored(KEYS.progress, {});
   const mine = all[courseId] || { done: {}, last: 0, sec: {} };
 
   const patch = (fn) => setAll(prev => {
@@ -97,7 +250,7 @@ export function useProgress(courseId) {
   });
 
   return {
-    ready,
+    ready: rdy,
     done: mine.done || {},
     last: mine.last || 0,
     sec: mine.sec || {},
@@ -121,4 +274,21 @@ export function useNotes(courseId) {
     return Object.assign({}, prev, { [courseId]: cur });
   });
   return { list, add, remove };
+}
+
+/* Resolves a lesson source: `idb:<id>` becomes an object URL for the
+   stored Blob; anything else passes straight through. */
+export function useMediaSrc(src) {
+  const [url, setUrl] = useState(() => (src && src.startsWith('idb:') ? null : src || null));
+
+  useEffect(() => {
+    let alive = true;
+    if (!src) { setUrl(null); return; }
+    if (!src.startsWith('idb:')) { setUrl(src); return; }
+    setUrl(null);
+    mediaUrl(src.slice(4)).then(u => { if (alive) setUrl(u); }).catch(() => { if (alive) setUrl(null); });
+    return () => { alive = false; };
+  }, [src]);
+
+  return url;
 }

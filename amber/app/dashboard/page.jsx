@@ -101,9 +101,9 @@ export default function Dashboard() {
           <p className="eyebrow">Device storage</p>
           <h3 style={{ fontSize: 21, marginBottom: 12 }}>What this browser is remembering</h3>
           <p style={{ color: 'var(--secondary)', fontSize: 15, maxWidth: '64ch' }}>
-            There is no database behind this build. Theme, enrolments, lesson progress, watch position and notes
-            live in this browser&apos;s localStorage under the <code className="mono">tb.</code> prefix. Close the tab,
-            reopen it, and everything is still here.
+            The whole demo runs on one JSON document in this browser, stored under <code className="mono">tb.db</code> —
+            theme, courses, accounts, purchases, lesson progress, watch position and notes. Close the tab,
+            reopen it, and everything is still here. Administrators can export it to a file from Admin → Database.
           </p>
           <div className="btn-row" style={{ marginTop: 20 }}>
             <button className="btn btn-s btn-sm" onClick={() => setShowRaw(s => !s)}>

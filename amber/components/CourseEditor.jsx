@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import AdminShell from './AdminShell';
 import Thumb from './Thumb';
 import { useCourses, slugify, blankCourse, readCourses } from '@/lib/store';
+import { mediaPut } from '@/lib/storage';
 import { parseDur, fmtLong, fmt } from '@/lib/data';
 
 const CATS = [
@@ -70,15 +71,25 @@ export default function CourseEditor({ courseId }) {
   /* ---------- video "upload" ----------
      No storage backend, so we create a blob URL. It plays immediately in
      this session; on reload the lesson falls back to the sample video. */
-  const onPick = (si, li, file) => {
+  const onPick = async (si, li, file) => {
     if (!file) return;
-    const url = URL.createObjectURL(file);
-    setLesson(si, li, {
-      src: url,
-      upload: file.name,
-      size: Math.round(file.size / 1048576) + ' MB',
-      title: c.sections[si].lectures[li].title || file.name.replace(/\.[^.]+$/, '')
-    });
+    setLesson(si, li, { upload: file.name, size: 'saving…' });
+    try {
+      const id = await mediaPut(file, file.name);          // Blob -> IndexedDB
+      setLesson(si, li, {
+        src: 'idb:' + id,
+        upload: file.name,
+        size: (file.size / 1048576).toFixed(1) + ' MB',
+        title: c.sections[si].lectures[li].title || file.name.replace(/\.[^.]+$/, '')
+      });
+    } catch (e) {
+      // no IndexedDB — fall back to a session-only object URL
+      setLesson(si, li, {
+        src: URL.createObjectURL(file),
+        upload: file.name + ' (session only)',
+        size: (file.size / 1048576).toFixed(1) + ' MB'
+      });
+    }
   };
 
   /* ---------- list fields ---------- */
@@ -287,7 +298,7 @@ export default function CourseEditor({ courseId }) {
                               ref={el => { fileRefs.current[si + '-' + li] = el; }}
                               onChange={e => onPick(si, li, e.target.files && e.target.files[0])} />
                             {l.upload && (
-                              <span className="uploaded" title="Plays in this session; blob URLs do not survive a reload">
+                              <span className="uploaded" title="Stored in IndexedDB — survives a reload">
                                 ✓ {l.upload} · {l.size}
                               </span>
                             )}
@@ -304,8 +315,9 @@ export default function CourseEditor({ courseId }) {
               <button className="btn btn-s" onClick={addSection}>+ Add section</button>
 
               <p style={{ fontSize: 13, color: 'var(--muted)', marginTop: 20, maxWidth: '70ch' }}>
-                Uploaded files play immediately in this session using an in-browser blob URL. Because there is no
-                storage backend, a reload falls back to the sample video — paste a hosted URL for anything permanent.
+                Uploaded video is written to the browser's IndexedDB as a real file and <b>survives a reload</b> —
+                no server involved. Manage or delete the stored clips in Admin → Database. For production, paste a
+                hosted URL instead.
               </p>
             </div>
           )}

@@ -9,8 +9,9 @@ import DemoBar from '@/components/DemoBar';
 import { ThemeProvider } from '@/lib/theme';
 import { findCourse } from '@/lib/data';
 
-const read = k => JSON.parse(window.localStorage.getItem('tb.' + k) || 'null');
-const write = (k, v) => window.localStorage.setItem('tb.' + k, JSON.stringify(v));
+import { read as dbRead, write as dbWrite } from '@/lib/storage';
+const read = k => dbRead(k, null);
+const write = (k, v) => dbWrite(k, v);
 const signIn = (email = 'learner@thinkingbridge.in', role = 'user') => {
   write('user', { name: 'Priya Sharma', email, role });
   write('purchases', { [email]: ['audit'] });
@@ -85,10 +86,11 @@ describe('checkout', () => {
     // list price before the coupon
     expect((await screen.findAllByText('₹4,284')).length).toBeGreaterThan(0);
 
-    // card details arrive pre-filled
+    // card details arrive pre-filled; the account fills in once the
+    // database has hydrated, so wait for it rather than asserting instantly
     expect(screen.getByDisplayValue('4242 4242 4242 4242')).toBeTruthy();
     expect(screen.getByDisplayValue('12 / 28')).toBeTruthy();
-    expect(screen.getByDisplayValue('student@thinkingbridge.in')).toBeTruthy();
+    expect(await screen.findByDisplayValue('student@thinkingbridge.in')).toBeTruthy();
 
     // a bad coupon is rejected
     await u.type(screen.getByPlaceholderText('Coupon code'), 'NOPE99');

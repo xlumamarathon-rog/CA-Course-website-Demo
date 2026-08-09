@@ -7,7 +7,8 @@ const NAV = [
   { href: '/admin', label: 'Dashboard', ic: '▦' },
   { href: '/admin/courses', label: 'Courses', ic: '▤' },
   { href: '/admin/site', label: 'Homepage', ic: '✦' },
-  { href: '/admin/students', label: 'Students', ic: '◍' }
+  { href: '/admin/students', label: 'Students', ic: '◍' },
+  { href: '/admin/database', label: 'Database', ic: '⛁' }
 ];
 
 export default function AdminShell({ children, title, action }) {

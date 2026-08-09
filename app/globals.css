@@ -854,3 +854,9 @@ main{padding-top:calc(var(--demo-h) + var(--ann-h) + var(--nav-h))}
 .statrow{display:flex;gap:9px;align-items:center;margin-bottom:10px}
 .rotor-static{color:var(--ac-text)}
 [data-theme="navy"] .rotor-static{color:var(--ac)}
+
+/* ---------- admin: seed cards ---------- */
+.seedcard{display:flex;flex-direction:column}
+
+/* ---------- admin: seed cards ---------- */
+.seedcard{display:flex;flex-direction:column}
