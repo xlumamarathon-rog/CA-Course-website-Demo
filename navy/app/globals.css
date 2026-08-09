@@ -813,3 +813,8 @@ main{padding-top:calc(var(--demo-h) + var(--ann-h) + var(--nav-h))}
   overflow:hidden;max-width:82%}
 .thumb.sm{padding:38px var(--s4) var(--s4)}
 .thumb.sm .tt{-webkit-line-clamp:2}
+
+/* 11. Instructor line wraps to two lines on some cards and one on others,
+       which pushed the facts row and price to different heights across a
+       row. Reserve two lines so every card in a row lines up. */
+.cc .by{min-height:2.6em}
