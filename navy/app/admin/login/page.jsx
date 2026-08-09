@@ -48,13 +48,15 @@ export default function AdminLoginPage() {
 
   return (
     <>
-      <section className="wrap" style={{ paddingTop: 56, paddingBottom: 96, maxWidth: 520 }}>
+      <section className="wrap auth-wrap" style={{ paddingTop: 56, paddingBottom: 96, maxWidth: 520 }}>
+        <div className="auth-head">
         <p className="eyebrow">Staff access</p>
         <h1 style={{ fontSize: 34, letterSpacing: '-.02em', marginBottom: 12 }}>Administrator sign-in</h1>
         <p style={{ color: 'var(--secondary)', marginBottom: 32 }}>
           Manage courses, upload lesson video, edit the homepage and inspect the database.
           Learners sign in at <Link href="/login" style={{ textDecoration: 'underline' }}>/login</Link>.
         </p>
+        </div>
 
         {user && (
           <div className="ok" style={{ marginBottom: 24 }}>
@@ -68,6 +70,8 @@ export default function AdminLoginPage() {
           </div>
         )}
 
+        <div className="auth-grid">
+        <div>
         <form onSubmit={submit}>
           <div className="field">
             <label>Work email <span className="req">*</span></label>
@@ -88,6 +92,7 @@ export default function AdminLoginPage() {
             {busy ? 'Signing you in…' : 'Sign in to the admin panel'}
           </button>
         </form>
+        </div>
 
         <div className="creds">
           <div className="creds-h">
@@ -113,6 +118,7 @@ export default function AdminLoginPage() {
             Shown here because this is a demo. In production this page would carry no credentials at
             all, and the role check would live on the server rather than in the browser.
           </p>
+        </div>
         </div>
       </section>
       <Footer />

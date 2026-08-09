@@ -77,7 +77,8 @@ function LoginInner() {
   }
 
   return (
-    <section className="wrap" style={{ paddingTop: 56, paddingBottom: 96, maxWidth: 560 }}>
+    <section className="wrap auth-wrap" style={{ paddingTop: 56, paddingBottom: 96, maxWidth: 560 }}>
+      <div className="auth-head">
       <p className="eyebrow">{mode === 'signin' ? 'Sign in' : 'Create account'}</p>
       <h1 style={{ fontSize: 34, letterSpacing: '-.02em', marginBottom: 12 }}>
         {mode === 'signin' ? 'Welcome back' : 'Start learning'}
@@ -87,7 +88,10 @@ function LoginInner() {
           ? 'Sign in and we will take you straight back to what you were opening.'
           : 'Your courses, progress and notes stay on this device.'}
       </p>
+      </div>
 
+      <div className="auth-grid">
+      <div>
       <form onSubmit={submit}>
         {mode === 'signup' && (
           <div className="field">
@@ -117,6 +121,14 @@ function LoginInner() {
         </button>
       </form>
 
+      <p style={{ marginTop: 28, fontSize: 15, color: 'var(--muted)' }}>
+        {mode === 'signin' ? 'New here? ' : 'Already have an account? '}
+        <button className="btn btn-t" onClick={() => { setMode(mode === 'signin' ? 'signup' : 'signin'); setErr(''); }}>
+          {mode === 'signin' ? 'Create an account' : 'Sign in instead'}
+        </button>
+      </p>
+      </div>
+
       {/* ---------- one-click demo credentials ---------- */}
       <div className="creds">
         <div className="creds-h">
@@ -144,13 +156,7 @@ function LoginInner() {
           Staff sign in at <Link href="/admin/login" style={{ textDecoration: 'underline' }}>/admin/login</Link>.
         </p>
       </div>
-
-      <p style={{ marginTop: 32, fontSize: 15, color: 'var(--muted)' }}>
-        {mode === 'signin' ? 'New here? ' : 'Already have an account? '}
-        <button className="btn btn-t" onClick={() => { setMode(mode === 'signin' ? 'signup' : 'signin'); setErr(''); }}>
-          {mode === 'signin' ? 'Create an account' : 'Sign in instead'}
-        </button>
-      </p>
+      </div>
     </section>
   );
 }

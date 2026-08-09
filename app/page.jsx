@@ -55,24 +55,38 @@ export default function Home() {
             )}
           </div>
 
-          <div className="deck" aria-hidden="true">
-            <div className="card-f c1">
-              <p className="eyebrow" style={{ marginBottom: 8 }}>Module 2</p>
-              <div style={{ fontWeight: 600, letterSpacing: '-.01em' }}>Substantive testing</div>
-            </div>
-            <div className="card-f c2">
-              <p className="eyebrow" style={{ marginBottom: 8 }}>Template</p>
-              <div style={{ fontWeight: 600, letterSpacing: '-.01em' }}>Revenue working paper</div>
-            </div>
-            <div className="card-f c3">
-              <p className="eyebrow" style={{ marginBottom: 12 }}>Now playing</p>
-              <div style={{ fontSize: 19, fontWeight: 600, letterSpacing: '-.01em', marginBottom: 16 }}>
-                Materiality — the number that shapes everything
+          {/* A slice of the actual product, rather than a decorative box. */}
+          <div className="showcase" aria-hidden="true">
+            <div className="showcase-card">
+              <div className="sc-top">
+                <span className="sc-dot" /><span className="sc-dot" /><span className="sc-dot" />
+                <span className="sc-url">ledgerline.in/learn/audit</span>
               </div>
-              <div className="mini">
+
+              <div className="sc-stage">
+                <span className="sc-kicker">Lesson 3 of 18</span>
+                <span className="sc-title">Materiality — the number that shapes everything</span>
+                <span className="sc-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg></span>
+              </div>
+
+              <div className="sc-bar">
                 <div className="pbar"><i style={{ width: '62%' }} /></div>
-                <span className="tnum" style={{ color: 'var(--muted)' }}>5:02</span>
+                <span className="tnum">5:02 / 8:05</span>
               </div>
+
+              <ul className="sc-list">
+                <li className="done"><span className="tick">✓</span>How an audit actually gets staffed and run<em>6:12</em></li>
+                <li className="done"><span className="tick">✓</span>Reading a trial balance like an auditor<em>9:40</em></li>
+                <li className="now"><span className="tick">▶</span>Materiality — the number that shapes everything<em>8:05</em></li>
+                <li><span className="tick" />Risk assessment: the memo template<em>11:20</em></li>
+              </ul>
+            </div>
+
+            <div className="sc-chip sc-chip-a">
+              <b>12 templates</b><i>Yours to keep</i>
+            </div>
+            <div className="sc-chip sc-chip-b">
+              <b>Capstone reviewed</b><i>By a Big 4 manager</i>
             </div>
           </div>
         </div>
