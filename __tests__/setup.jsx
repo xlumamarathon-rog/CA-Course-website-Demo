@@ -1,3 +1,4 @@
+import 'fake-indexeddb/auto';
 import { vi, beforeEach } from 'vitest';
 import { cleanup } from '@testing-library/react';
 import { clearAll, whenReady } from '@/lib/storage';

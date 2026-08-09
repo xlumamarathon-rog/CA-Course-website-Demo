@@ -71,23 +71,45 @@ export default function CourseEditor({ courseId }) {
   /* ---------- video "upload" ----------
      No storage backend, so we create a blob URL. It plays immediately in
      this session; on reload the lesson falls back to the sample video. */
+  /* 32 KB should not read as "0.0 MB" */
+  const fileSize = (b) =>
+    b < 1024 ? b + ' B' : b < 1048576 ? Math.round(b / 1024) + ' KB' : (b / 1048576).toFixed(1) + ' MB';
+
+  /* Read the real running time out of the file so the curriculum shows the
+     same duration the player will. */
+  const readDuration = (file) => new Promise(resolve => {
+    try {
+      const v = document.createElement('video');
+      const url = URL.createObjectURL(file);
+      const done = (val) => { URL.revokeObjectURL(url); resolve(val); };
+      v.preload = 'metadata';
+      v.onloadedmetadata = () => {
+        const s = Math.round(v.duration || 0);
+        done(s > 0 ? Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0') : null);
+      };
+      v.onerror = () => done(null);
+      setTimeout(() => done(null), 5000);
+      v.src = url;
+    } catch (e) { resolve(null); }
+  });
+
   const onPick = async (si, li, file) => {
     if (!file) return;
     setLesson(si, li, { upload: file.name, size: 'saving…' });
     try {
-      const id = await mediaPut(file, file.name);          // Blob -> IndexedDB
-      setLesson(si, li, {
+      const [id, dur] = await Promise.all([mediaPut(file, file.name), readDuration(file)]);
+      setLesson(si, li, Object.assign({
         src: 'idb:' + id,
         upload: file.name,
-        size: (file.size / 1048576).toFixed(1) + ' MB',
+        size: fileSize(file.size),
         title: c.sections[si].lectures[li].title || file.name.replace(/\.[^.]+$/, '')
-      });
+      }, dur ? { dur } : {}));
     } catch (e) {
       // no IndexedDB — fall back to a session-only object URL
       setLesson(si, li, {
         src: URL.createObjectURL(file),
         upload: file.name + ' (session only)',
-        size: (file.size / 1048576).toFixed(1) + ' MB'
+        size: fileSize(file.size)
       });
     }
   };
